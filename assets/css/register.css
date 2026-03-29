@@ -1,0 +1,91 @@
+:root {
+    --primary-color: #4361ee;
+    --bg-gradient: linear-gradient(135deg, #f8f9ff 0%, #e0e7ff 100%);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
+}
+
+.register-card {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    max-width: 1000px;
+    width: 100%;
+    border: none;
+}
+
+.register-info-side {
+    background: var(--primary-color);
+    background: linear-gradient(rgba(67, 97, 238, 0.85), rgba(67, 97, 238, 0.95)),
+        url('https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.register-form-side {
+    padding: 40px 50px;
+}
+
+.form-control {
+    padding: 10px 15px;
+    border-radius: 10px;
+    border: 1px solid #e0e7ff;
+    background-color: #fcfdff;
+    font-size: 0.95rem;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+    border-color: var(--primary-color);
+}
+
+.btn-register {
+    background-color: var(--primary-color);
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s;
+    color: white;
+    margin-top: 10px;
+}
+
+.btn-register:hover {
+    background-color: #3046c8;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+    color: white;
+}
+
+.input-group-text {
+    border-radius: 10px 0 0 10px;
+    background-color: #fcfdff;
+    border: 1px solid #e0e7ff;
+    color: #64748b;
+}
+
+@media (max-width: 768px) {
+    .register-info-side {
+        display: none;
+    }
+
+    .register-form-side {
+        padding: 30px;
+    }
+}

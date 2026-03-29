@@ -1,0 +1,101 @@
+        :root {
+            --primary-color: #4361ee;
+            --bg-gradient: linear-gradient(135deg, #f8f9ff 0%, #e0e7ff 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-gradient);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .login-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            max-width: 900px;
+            width: 100%;
+            border: none;
+        }
+
+        .login-info-side {
+            background: var(--primary-color);
+            background: linear-gradient(rgba(67, 97, 238, 0.8), rgba(67, 97, 238, 0.9)),
+                url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1115&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .login-form-side {
+            padding: 50px;
+        }
+
+        .form-control {
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid #e0e7ff;
+            background-color: #fcfdff;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .btn-login {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .btn-login:hover {
+            background-color: #3046c8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+            color: white;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-btn {
+            flex: 1;
+            border: 1px solid #e0e7ff;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            color: #64748b;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .social-btn:hover {
+            background-color: #f8f9ff;
+        }
+
+        @media (max-width: 768px) {
+            .login-info-side {
+                display: none;
+            }
+        }
+
+        
