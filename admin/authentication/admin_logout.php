@@ -1,6 +1,15 @@
 <?php
 session_start();
-unset($_SESSION['admin_username']);
+
+// 1. Xóa toàn bộ biến Session
+$_SESSION = array();
+
+// 2. Hủy phiên làm việc trên Server
 session_destroy();
-echo "<script>window.open('./admin_login.php','_self');</script>";
+
+// 3. Chuyển hướng về trang login (cùng nằm trong thư mục authentication)
+echo "<script>
+    window.location.href = 'admin_login.php';
+</script>";
+exit();
 ?>

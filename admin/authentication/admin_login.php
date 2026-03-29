@@ -1,6 +1,5 @@
 <?php
 include(__DIR__ . '/../../includes/connect.php');
-include(__DIR__ . '/../../functions/common_functions.php');
 session_start();
 ?>
 <!DOCTYPE html>
@@ -18,6 +17,8 @@ session_start();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="shortcut icon" type="image/x-icon" href="../../assets/images/logo/icon-laptopshop.png" />
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <link rel="stylesheet" href="../../assets/css/admin/login.css" />
 </head>
@@ -41,11 +42,13 @@ session_start();
 
                     <form action="" method="post">
                         <div class="mb-3">
-                            <label for="username" class="form-label text-secondary small fw-bold">Email</label>
+                            <label for="username" class="form-label text-secondary small fw-bold">EMAIL ĐĂNG
+                                NHẬP</label>
                             <div class="input-group">
-                                <span class="input-group-text bg-transparent border-end-0"><i
-                                        class="far fa-user"></i></span>
-                                <input type="text" name="username" id="username" class="form-control border-start-0"
+                                <span class="input-group-text bg-transparent border-end-0">
+                                    <i class="far fa-envelope"></i>
+                                </span>
+                                <input type="email" name="username" id="username" class="form-control border-start-0"
                                     placeholder="Nhập email đăng nhập..." required>
                             </div>
                         </div>
@@ -75,34 +78,83 @@ session_start();
             </div>
         </div>
     </div>
-
-    <!-- Bootstrap Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <?php
+    handleAdminLogin($con);
+    ?>
 </body>
 
 </html>
 
 <?php
-// Giữ nguyên phần xử lý PHP bên dưới
-if (isset($_POST['admin_login'])) {
-    $username = mysqli_real_escape_string($con, $_POST['username']); // Thêm escape để bảo mật hơn
-    $password = $_POST['password'];
+function handleAdminLogin($con)
+{
+    if (isset($_POST['admin_login'])) {
+        $email = mysqli_real_escape_string($con, $_POST['username']);
+        $password = $_POST['password'];
 
-    $select_query = "SELECT * FROM `admin_table` WHERE admin_name='$username'";
-    $select_result = mysqli_query($con, $select_query);
-    $row_count = mysqli_num_rows($select_result);
+        // Lấy thông tin user (phải active và thuộc nhóm nhân sự)
+        $select_query = "SELECT * FROM `users` WHERE `email`='$email' AND `status`='active'";
+        $select_result = mysqli_query($con, $select_query);
+        $row_count = mysqli_num_rows($select_result);
 
-    if ($row_count > 0) {
-        $row_data = mysqli_fetch_assoc($select_result);
-        if (password_verify($password, $row_data['admin_password'])) {
-            $_SESSION['admin_username'] = $username;
-            echo "<script>alert('Login Successfully');</script>";
-            echo "<script>window.open('./index.php','_self');</script>";
+        if ($row_count > 0) {
+            $row_data = mysqli_fetch_assoc($select_result);
+
+            // Kiểm tra mật khẩu và quyền hạn
+            if (password_verify($password, $row_data['password'])) {
+
+                $user_role = $row_data['role'];
+
+                // Kiểm tra nếu không phải admin hoặc staff thì từ chối
+                if ($user_role !== 'admin' && $user_role !== 'staff') {
+                    echo "<script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            Swal.fire({ icon: 'error', title: 'Truy cập bị từ chối', text: 'Tài khoản này không có quyền vào trang quản trị!' });
+                        });
+                    </script>";
+                    return;
+                }
+
+                // Lưu Session
+                $_SESSION['admin_id'] = $row_data['id'];
+                $_SESSION['admin_name'] = $row_data['name'];
+                $_SESSION['admin_role'] = $user_role;
+                $_SESSION['admin_avatar'] = $row_data['avatar'];
+
+                // Chuyển hướng về admin/dashboard.php
+                echo "
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            timerProgressBar: true
+                        });
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Chào mừng " . $row_data['name'] . "!'
+                        }).then(() => {
+                            window.location.href = '../index.php'; 
+                        });
+                    });
+                </script>";
+            } else {
+                echo "<script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Mật khẩu không chính xác!' });
+                    });
+                </script>";
+            }
         } else {
-            echo "<script>alert('Mật khẩu không chính xác!')</script>";
+            echo "<script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({ icon: 'warning', title: 'Thất bại', text: 'Tài khoản không tồn tại hoặc đã bị khóa!' });
+                });
+            </script>";
         }
-    } else {
-        echo "<script>alert('Tài khoản không tồn tại!')</script>";
     }
 }
-?>
