@@ -1,7 +1,11 @@
 <?php
 include('../includes/connect.php');
 include('../functions/common_functions.php');
+include('../functions/user/authentication/login.php'); // Gọi file chứa hàm vào đây
 @session_start();
+
+// Gọi hàm thực thi logic ngay khi load trang
+user_login_logic($con);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,77 +13,63 @@ include('../functions/common_functions.php');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ecommerce User Login Page</title>
+    <title>Login | Tech Store</title>
     <link rel="stylesheet" href="../assets/css/bootstrap.css" />
     <link rel="stylesheet" href="../assets/css/main.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/user/login.css" />
 </head>
 
 <body>
 
-    <div class="register">
-        <div class="container py-3">
-            <h2 class="text-center mb-4">User Login</h2>
-            <div class="row justify-content-center">
-                <div class="col-lg-6">
-                    <form action="" method="post" class="d-flex flex-column gap-4">
-                        <!-- username field  -->
-                        <div class="form-outline">
-                            <label for="user_username" class="form-label">Username</label>
-                            <input type="text" placeholder="Enter your username" autocomplete="off" required="required" name="user_username" id="user_username" class="form-control">
-                        </div>
-                        <!-- password field  -->
-                        <div class="form-outline">
-                            <label for="user_password" class="form-label">Password</label>
-                            <input type="password" placeholder="Enter your password" autocomplete="off" required="required" name="user_password" id="user_password" class="form-control">
-                        </div>
-                        <div><a href="" class="text-decoration-underline">Forget your password?</a></div>
-                        <div>
-                            <input type="submit" value="Login" class="btn btn-primary mb-2" name="user_login">
-                            <p>
-                                Don't have an account? <a href="user_registration.php" class="text-primary text-decoration-underline"><strong>Register</strong></a>
-                            </p>
-                        </div>
-                    </form>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-side-img">
+                <h1 class="fw-bold mb-3">MT Shop</h1>
+                <p class="fs-5 opacity-75">Nâng tầm trải nghiệm công nghệ với những dòng máy tính đỉnh cao.</p>
+                <div class="mt-4 border-start ps-3 border-white-50 small">
+                    "Sáng tạo không giới hạn cùng hiệu năng vượt trội."
+                    "Chơi game bao đã."
                 </div>
+            </div>
+
+            <div class="login-form-area">
+                <div class="mb-4">
+                    <h2 class="fw-bold">Chào mừng trở lại!</h2>
+                    <p style="color: var(--text-muted)">Đăng nhập để quản lý tài khoản của bạn</p>
+                </div>
+
+                <form action="" method="post" class="d-flex flex-column gap-3">
+                    <div class="form-group">
+                        <label class="form-label small fw-semibold"> Email</label>
+                        <input type="text" name="user_username" placeholder="Nhập email của bạn!" required class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label small fw-semibold">Mật khẩu</label>
+                        <input type="password" name="user_password" placeholder="••••••••" required class="form-control">
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="remember">
+                            <label class="form-check-label small" for="remember">Ghi nhớ tôi</label>
+                        </div>
+                        <a href="#" class="small text-primary-tech text-decoration-none fw-medium">Quên mật khẩu?</a>
+                    </div>
+
+                    <button type="submit" name="user_login" class="btn btn-primary-tech">Đăng nhập ngay</button>
+
+                    <p class="text-center mt-4 mb-0 small text-muted">
+                        Bạn là người mới?
+                        <a href="user_registration.php" class="text-primary-tech fw-bold text-decoration-none">Tạo tài khoản</a>
+                    </p>
+                </form>
             </div>
         </div>
     </div>
-    <script src="./assets//js/bootstrap.bundle.js"></script>
+
+    <script src="../assets/js/bootstrap.bundle.js"></script>
 </body>
 
 </html>
-<?php
-if (isset($_POST['user_login'])) {
-    $user_username = $_POST['user_username'];
-    $user_password = $_POST['user_password'];
-    $select_query = "SELECT * FROM `user_table` WHERE username='$user_username'";
-    $select_result = mysqli_query($con, $select_query);
-    $row_data = mysqli_fetch_assoc($select_result);
-    $row_count = mysqli_num_rows($select_result);
-    $user_ip = getIPAddress();
-    //check if user have items |! -> redirect to payment | index 
-    $select_cart_query = "SELECT * FROM `card_details` WHERE ip_address='$user_ip'";
-    $select_cart_result = mysqli_query($con, $select_cart_query);
-    $row_cart_count = mysqli_num_rows($select_cart_result);
-    //user check about username & pass
-    if ($row_count > 0) {
-        if (password_verify($user_password, $row_data['user_password'])) {
-            // echo "<script>alert('Login Successfully')</script>";
-            $_SESSION['username'] = $user_username;
-            if ($row_count == 1 && $row_cart_count == 0) {
-                $_SESSION['username'] = $user_username;
-                echo "<script>alert('Login Successfully');</script>";
-                echo "<script>window.open('profile.php','_self');</script>";
-            } else if ($row_count == 1 && $row_cart_count > 0) {
-                $_SESSION['username'] = $user_username;
-                echo "<script>alert('Login Successfully');</script>";
-                echo "<script>window.open('payment.php','_self');</script>";
-            }
-        } else {
-            echo "<script>alert('Invalid Credentials')</script>";
-        }
-    } else {
-        echo "<script>alert('Invalid Credentials')</script>";
-    }
-}
-?>
