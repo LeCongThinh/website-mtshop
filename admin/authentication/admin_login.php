@@ -9,7 +9,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | Login</title>
+    <title>Đăng nhập tài khoản quản trị - MTSHop</title>
     <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
@@ -17,7 +17,9 @@ session_start();
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <link rel="stylesheet" href="../../assets/css/login.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../assets/images/logo/icon-laptopshop.png" />
+
+    <link rel="stylesheet" href="../../assets/css/admin/login.css" />
 </head>
 
 <body>
@@ -41,8 +43,10 @@ session_start();
                         <div class="mb-3">
                             <label for="username" class="form-label text-secondary small fw-bold">Email</label>
                             <div class="input-group">
-                                <span class="input-group-text bg-transparent border-end-0"><i class="far fa-user"></i></span>
-                                <input type="text" name="username" id="username" class="form-control border-start-0" placeholder="admin123" required>
+                                <span class="input-group-text bg-transparent border-end-0"><i
+                                        class="far fa-user"></i></span>
+                                <input type="text" name="username" id="username" class="form-control border-start-0"
+                                    placeholder="Nhập email đăng nhập..." required>
                             </div>
                         </div>
 
@@ -51,8 +55,10 @@ session_start();
                                 <label for="password" class="form-label text-secondary small fw-bold">Mật khẩu</label>
                             </div>
                             <div class="input-group">
-                                <span class="input-group-text bg-transparent border-end-0"><i class="fas fa-lock"></i></span>
-                                <input type="password" name="password" id="password" class="form-control border-start-0" placeholder="••••••••" required>
+                                <span class="input-group-text bg-transparent border-end-0"><i
+                                        class="fas fa-lock"></i></span>
+                                <input type="password" name="password" id="password" class="form-control border-start-0"
+                                    placeholder="••••••••" required>
                             </div>
                         </div>
 
@@ -61,7 +67,8 @@ session_start();
                         </button>
 
                         <p class="text-center mt-4 text-muted small">
-                            Chưa có tài khoản? <a href="admin_resgistration.php" class="text-primary fw-bold text-decoration-none">Đăng ký ngay</a>
+                            Chưa có tài khoản? <a href="admin_resgistration.php"
+                                class="text-primary fw-bold text-decoration-none">Đăng ký ngay</a>
                         </p>
                     </form>
                 </div>
@@ -80,11 +87,11 @@ session_start();
 if (isset($_POST['admin_login'])) {
     $username = mysqli_real_escape_string($con, $_POST['username']); // Thêm escape để bảo mật hơn
     $password = $_POST['password'];
-    
+
     $select_query = "SELECT * FROM `admin_table` WHERE admin_name='$username'";
     $select_result = mysqli_query($con, $select_query);
     $row_count = mysqli_num_rows($select_result);
-    
+
     if ($row_count > 0) {
         $row_data = mysqli_fetch_assoc($select_result);
         if (password_verify($password, $row_data['admin_password'])) {

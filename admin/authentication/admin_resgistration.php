@@ -8,7 +8,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Registration | Dashboard</title>
+    <title>Đăng ký tài khoản quản trị - MTShop</title>
     <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
@@ -16,7 +16,9 @@ session_start();
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <link rel="stylesheet" href="../../assets/css/register.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../assets/images/logo/icon-laptopshop.png" />
+
+    <link rel="stylesheet" href="../../assets/css/admin/register.css" />
 
 </head>
 
@@ -31,17 +33,17 @@ session_start();
                 </div>
                 <div class="col-md-7 register-form-side">
                     <div class="mb-4">
-                        <h3 class="fw-bold text-dark">Admin Registration</h3>
+                        <h3 class="fw-bold text-dark">Đăng ký tài khoản quản trị</h3>
                         <p class="text-muted small">Tạo tài khoản để quản trị hệ thống</p>
                     </div>
 
                     <form action="" method="post" enctype="multipart/form-data">
                         <div class="mb-3">
-                            <label class="form-label text-secondary small fw-bold">Tên đăng nhập</label>
+                            <label class="form-label text-secondary small fw-bold">Tên người dùng</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-transparent"><i class="far fa-user"></i></span>
                                 <input type="text" name="username" class="form-control border-start-0"
-                                    placeholder="Tên đăng nhập" required>
+                                    placeholder="Tên người dùng..." required>
                             </div>
                         </div>
 
@@ -50,7 +52,7 @@ session_start();
                             <div class="input-group">
                                 <span class="input-group-text bg-transparent"><i class="far fa-envelope"></i></span>
                                 <input type="email" name="email" class="form-control border-start-0"
-                                    placeholder="admin@example.com" required>
+                                    placeholder="Nhập email..." required>
                             </div>
                         </div>
 
