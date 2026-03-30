@@ -1,7 +1,7 @@
 <?php
-include('../includes/connect.php');
-include('../functions/common_functions.php');
-include('../functions/user/authentication/register.php'); 
+include('../../includes/connect.php');
+include('../../functions/common_functions.php');
+include('../../functions/user/authentication/register.php'); 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -12,18 +12,18 @@ if (session_status() === PHP_SESSION_NONE) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng ký | Tech Store</title>
-    <link rel="stylesheet" href="../assets/css/bootstrap.css" />
-    <link rel="stylesheet" href="../assets/css/main.css" />
+    <title>Đăng ký tài khoản MTShop</title>
+    <link rel="stylesheet" href="../../assets/css/bootstrap.css" />
+    <link rel="stylesheet" href="../../assets/css/main.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-     <link rel="stylesheet" href="../assets/css/user/register.css" />
+     <link rel="stylesheet" href="../../assets/css/user/register.css" />
 </head>
 <body>
 
     <div class="reg-container">
         <div class="reg-card">
             <div class="reg-side-img">
-                <h2 class="fw-bold mb-3">Tham gia MT Shop</h2>
+                <h2 class="fw-bold mb-3">Tham gia MTShop</h2>
                 <p class="opacity-75">Tạo tài khoản để trải nghiệm những tính năng ưu đãi dành riêng cho thành viên.</p>
             </div>
 

@@ -1,7 +1,7 @@
 <?php
-include('../includes/connect.php');
-include('../functions/common_functions.php');
-include('../functions/user/authentication/login.php'); // Gọi file chứa hàm vào đây
+include('../../includes/connect.php');
+include('../../functions/common_functions.php');
+include('../../functions/user/authentication/login.php'); // Gọi file chứa hàm vào đây
 @session_start();
 
 // Gọi hàm thực thi logic ngay khi load trang
@@ -14,10 +14,10 @@ user_login_logic($con);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | Tech Store</title>
-    <link rel="stylesheet" href="../assets/css/bootstrap.css" />
-    <link rel="stylesheet" href="../assets/css/main.css" />
+    <link rel="stylesheet" href="../../assets/css/bootstrap.css" />
+    <link rel="stylesheet" href="../../assets/css/main.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/user/login.css" />
+    <link rel="stylesheet" href="../../assets/css/user/login.css" />
 </head>
 
 <body>
@@ -25,7 +25,7 @@ user_login_logic($con);
     <div class="login-container">
         <div class="login-card">
             <div class="login-side-img">
-                <h1 class="fw-bold mb-3">MT Shop</h1>
+                <h1 class="fw-bold mb-3">MTShop</h1>
                 <p class="fs-5 opacity-75">Nâng tầm trải nghiệm công nghệ với những dòng máy tính đỉnh cao.</p>
                 <div class="mt-4 border-start ps-3 border-white-50 small">
                     "Sáng tạo không giới hạn cùng hiệu năng vượt trội."

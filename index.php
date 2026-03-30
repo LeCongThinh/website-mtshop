@@ -103,14 +103,14 @@ session_start();
                     <?php
                     if(!isset($_SESSION['username'])){
                         echo "<li class='nav-item'>
-                        <a class='nav-link' href='./users_area/user_login.php'>
-                            Login
+                        <a class='nav-link' href='./users_area/authentication/user_login.php'>
+                            Đăng nhập
                         </a>
                     </li>";
                 }else{
                         echo "<li class='nav-item'>
                         <a class='nav-link' href='./users_area/logout.php'>
-                            Logout
+                            Đăng xuất
                         </a>
                     </li>";
                     }

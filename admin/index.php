@@ -218,6 +218,9 @@ if ($row = mysqli_fetch_array($get_user_result)) {
             {
                 if ($key == 'dashboard' && empty($_SERVER['QUERY_STRING']))
                     return 'active';
+                // Kiểm tra active cho cả trang list và trang edit liên quan
+                if ($key == 'list_accounts' && isset($_GET['edit_user']))
+                    return 'active';
                 return (isset($_GET[$key])) ? 'active' : '';
             }
             ?>
@@ -359,6 +362,9 @@ if ($row = mysqli_fetch_array($get_user_result)) {
                     }
                     if (isset($_GET['create_account'])) {
                         include('./accounts/create_account.php');
+                    }
+                    if (isset($_GET['edit_user'])) {
+                        include('./accounts/edit_account.php');
                     }
 
                     // Mặc định nếu không chọn gì
