@@ -1,17 +1,12 @@
 <?php
-// 1. Gọi file xử lý logic để lấy dữ liệu và xử lý UPDATE
 include('../functions/admin/accounts/update_account.php');
-
-// Biến $row_user và các thông tin đã được file logic chuẩn bị dựa trên $_GET['edit_user']
 ?>
-<!-- Hiển thị thông báo Bootstrap -->
 <?php if (isset($status_update) && $status_update == "success"): ?>
     <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" id="auto-close-alert">
         <i class="fas fa-check-circle me-2"></i> <strong>Thành công!</strong> Đã cập nhật thông tin tài khoản.
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     <script>
-        // Tự động chuyển hướng sau 1.5 giây nếu muốn
         setTimeout(function () {
             window.location.href = 'index.php?list_accounts';
         }, 1500);

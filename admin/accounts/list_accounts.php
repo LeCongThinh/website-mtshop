@@ -10,6 +10,7 @@
 </head>
 
 <body>
+    
     <div class="container mt-4">
         <div class="categ-header mb-4">
             <div class="sub-title d-flex align-items-center gap-2">
@@ -39,7 +40,9 @@
         // Truy vấn dữ liệu: Mới nhất lên đầu (DESC) + Phân trang (LIMIT), loại bỏ tài khoản đang đăng nhập
         $get_user_query = "SELECT * FROM `users` WHERE id != $current_admin_id ORDER BY id DESC LIMIT $start, $limit";
         $get_user_result = mysqli_query($con, $get_user_query);
+
         ?>
+
 
         <div class="table-data shadow-sm rounded border overflow-hidden">
             <table class="table table-hover align-middle text-center mb-0">
@@ -81,7 +84,28 @@
                                     $role_display = "<span class='badge rounded-pill bg-secondary'><i class='fas fa-user me-1'></i> Khách hàng</span>";
                                     break;
                             }
+                            // 2. Xử lý hiển thị Trạng thái (Phải nằm trong while)
+                            $status_display = ($user_status === 'active')
+                                ? "<span class='badge bg-success-subtle text-success border border-success px-3'><i class='fas fa-circle me-1' style='font-size: 8px;'></i> Hoạt động</span>"
+                                : "<span class='badge bg-danger-subtle text-danger border border-danger px-3'><i class='fas fa-ban me-1'></i> Bị khóa</span>";
 
+                            // 3. Xử lý logic Nút bấm (Phải nằm trong while)
+                            if ($user_status === 'active') {
+                                $action_buttons = "
+                                <a href='index.php?edit_user=$user_id' class='btn btn-sm btn-outline-primary' title='Sửa'>
+                                    <i class='fas fa-edit'></i>
+                                </a>
+                                <button class='btn btn-sm btn-outline-danger' data-bs-toggle='modal' data-bs-target='#deleteModal_$user_id' title='Xóa'>
+                                    <i class='fas fa-trash-alt'></i>
+                                </button>";
+                            } else {
+                                $action_buttons = "
+                                <a href='../functions/admin/accounts/restore_account.php?restore_user=$user_id'
+                                class='btn btn-sm btn-outline-success px-3 d-flex align-items-center justify-content-center fw-bold shadow-sm' 
+                                style='height: 35px; font-size: 13px;' title='Khôi phục tài khoản' onclick=\"return confirm('Bạn có chắc chắn muốn khôi phục tài khoản này không?')\">
+                                    <i class='fas fa-undo-alt me-1'></i> Khôi phục
+                                </a>";
+                            }
                             // Xử lý hiển thị Trạng thái
                             $status_display = ($user_status === 'active')
                                 ? "<span class='badge bg-success-subtle text-success border border-success px-3'><i class='fas fa-circle me-1' style='font-size: 8px;'></i> Hoạt động</span>"
@@ -97,9 +121,8 @@
                                 <td>$status_display</td>
                                 <td>
                                     <div class='d-flex justify-content-center gap-2'>
-                                        <a href='index.php?edit_user=$user_id' class='btn btn-sm btn-outline-primary' title='Sửa'><i class='fas fa-edit'></i></a>
-                                        <button class='btn btn-sm btn-outline-danger' data-bs-toggle='modal' data-bs-target='#deleteModal_$user_id' title='Xóa'><i class='fas fa-trash-alt'></i></button>
-                                    </div>
+                                    $action_buttons
+                                </div>
                                 </td>
                             </tr>
                             <!-- Modal Xác Nhận Khóa Tài Khoản -->
