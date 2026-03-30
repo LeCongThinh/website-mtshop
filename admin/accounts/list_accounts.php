@@ -13,7 +13,8 @@
     <div class="container mt-4">
         <div class="categ-header mb-4">
             <div class="sub-title d-flex align-items-center gap-2">
-                <span class="shape bg-primary" style="width: 5px; height: 25px; display: inline-block; border-radius: 10px;"></span>
+                <span class="shape bg-primary"
+                    style="width: 5px; height: 25px; display: inline-block; border-radius: 10px;"></span>
                 <h3 class="mb-0">Danh sách tài khoản</h3>
             </div>
         </div>
@@ -21,18 +22,22 @@
         <?php
         // --- LOGIC PHÂN TRANG ---
         $limit = 10; // Số lượng record mỗi trang
-        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        if ($page < 1) $page = 1;
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        if ($page < 1)
+            $page = 1;
         $start = ($page - 1) * $limit;
 
-        // Lấy tổng số dòng để tính số trang
-        $total_res = mysqli_query($con, "SELECT COUNT(*) as total FROM `users`");
+        // Lấy ID admin hiện tại từ session (nếu có)
+        $current_admin_id = isset($_SESSION['admin_id']) ? (int) $_SESSION['admin_id'] : 0;
+
+        // Lấy tổng số dòng để tính số trang (loại bỏ tài khoản đang đăng nhập)
+        $total_res = mysqli_query($con, "SELECT COUNT(*) as total FROM `users` WHERE id != $current_admin_id");
         $total_data = mysqli_fetch_assoc($total_res);
         $total_records = $total_data['total'];
         $total_pages = ceil($total_records / $limit);
 
-        // Truy vấn dữ liệu: Mới nhất lên đầu (DESC) + Phân trang (LIMIT)
-        $get_user_query = "SELECT * FROM `users` ORDER BY id DESC LIMIT $start, $limit";
+        // Truy vấn dữ liệu: Mới nhất lên đầu (DESC) + Phân trang (LIMIT), loại bỏ tài khoản đang đăng nhập
+        $get_user_query = "SELECT * FROM `users` WHERE id != $current_admin_id ORDER BY id DESC LIMIT $start, $limit";
         $get_user_result = mysqli_query($con, $get_user_query);
         ?>
 
@@ -55,7 +60,7 @@
                         echo "<tr><td colspan='7' class='py-4 text-muted'>Chưa có tài khoản nào trong hệ thống.</td></tr>";
                     } else {
                         // STT cộng dồn theo trang: Trang 1 (1-10), Trang 2 (11-20)...
-                        $id_number = $start + 1; 
+                        $id_number = $start + 1;
                         while ($row = mysqli_fetch_array($get_user_result)) {
                             $user_id = $row['id'];
                             $username = $row['name'];
@@ -78,7 +83,7 @@
                             }
 
                             // Xử lý hiển thị Trạng thái
-                            $status_display = ($user_status === 'active') 
+                            $status_display = ($user_status === 'active')
                                 ? "<span class='badge bg-success-subtle text-success border border-success px-3'><i class='fas fa-circle me-1' style='font-size: 8px;'></i> Hoạt động</span>"
                                 : "<span class='badge bg-danger-subtle text-danger border border-danger px-3'><i class='fas fa-ban me-1'></i> Bị khóa</span>";
 
@@ -96,7 +101,26 @@
                                         <button class='btn btn-sm btn-outline-danger' data-bs-toggle='modal' data-bs-target='#deleteModal_$user_id' title='Xóa'><i class='fas fa-trash-alt'></i></button>
                                     </div>
                                 </td>
-                            </tr>";
+                            </tr>
+                            <!-- Modal Xác Nhận Khóa Tài Khoản -->
+                            <div class='modal fade' id='deleteModal_$user_id' tabindex='-1' aria-hidden='true'>
+                                <div class='modal-dialog modal-dialog-centered'>
+                                    <div class='modal-content'>
+                                        <div class='modal-header'>
+                                            <h5 class='modal-title'>Xác nhận khóa</h5>
+                                            <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+                                        </div>
+                                        <div class='modal-body text-start'>
+                                            Bạn có chắc chắn muốn khóa tài khoản của <strong>$username</strong> không? 
+                                            <p class='text-muted small mb-0'>Trạng thái sẽ được chuyển sang 'Bị khóa'.</p>
+                                        </div>
+                                        <div class='modal-footer'>
+                                            <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Hủy</button>
+                                            <a href='../functions/admin/accounts/delete_account.php?id=$user_id&action=deactivate' class='btn btn-danger'>Đồng ý khóa</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>";
                             $id_number++;
                         }
                     }
@@ -107,23 +131,23 @@
 
         <!-- --- HIỂN THỊ PHÂN TRANG --- -->
         <?php if ($total_pages > 1): ?>
-        <nav class="mt-4">
-            <ul class="pagination justify-content-center">
-                <li class="page-item <?php echo ($page <= 1) ? 'disabled' : ''; ?>">
-                    <a class="page-link" href="index.php?list_accounts&page=<?php echo $page - 1; ?>">Trước</a>
-                </li>
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item <?php echo ($page <= 1) ? 'disabled' : ''; ?>">
+                        <a class="page-link" href="index.php?list_accounts&page=<?php echo $page - 1; ?>">Trước</a>
+                    </li>
 
-                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                <li class="page-item <?php echo ($page == $i) ? 'active' : ''; ?>">
-                    <a class="page-link" href="index.php?list_accounts&page=<?php echo $i; ?>"><?php echo $i; ?></a>
-                </li>
-                <?php endfor; ?>
+                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                        <li class="page-item <?php echo ($page == $i) ? 'active' : ''; ?>">
+                            <a class="page-link" href="index.php?list_accounts&page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                        </li>
+                    <?php endfor; ?>
 
-                <li class="page-item <?php echo ($page >= $total_pages) ? 'disabled' : ''; ?>">
-                    <a class="page-link" href="index.php?list_accounts&page=<?php echo $page + 1; ?>">Sau</a>
-                </li>
-            </ul>
-        </nav>
+                    <li class="page-item <?php echo ($page >= $total_pages) ? 'disabled' : ''; ?>">
+                        <a class="page-link" href="index.php?list_accounts&page=<?php echo $page + 1; ?>">Sau</a>
+                    </li>
+                </ul>
+            </nav>
         <?php endif; ?>
     </div>
 </body>
