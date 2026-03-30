@@ -279,12 +279,12 @@ if ($row = mysqli_fetch_array($get_user_result)) {
 
             <div class="px-4 py-2 small text-uppercase text-muted" style="font-size: 0.7rem;">Quản lý bài viết</div>
             <li class="nav-item">
-                <a href="#" class="nav-link <?php echo isActive('list_users'); ?>">
+                <a href="index.php?list_posts" class="nav-link <?php echo isActive('list_posts'); ?>">
                     <i class="fas fa-newspaper"></i> Danh sách bài viết
                 </a>
             </li>
             <li class="nav-item" style="margin-bottom: 200px;">
-                <a href="#" class="nav-link <?php echo isActive('list_payments'); ?>">
+                <a href="index.php?create_post" class="nav-link <?php echo isActive('create_post'); ?>">
                     <i class="fas fa-pen-to-square"></i> Thêm mới bài viết
                 </a>
             </li>

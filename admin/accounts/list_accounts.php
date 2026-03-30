@@ -110,17 +110,17 @@
         <nav class="mt-4">
             <ul class="pagination justify-content-center">
                 <li class="page-item <?php echo ($page <= 1) ? 'disabled' : ''; ?>">
-                    <a class="page-link" href="index.php?list_users&page=<?php echo $page - 1; ?>">Trước</a>
+                    <a class="page-link" href="index.php?list_accounts&page=<?php echo $page - 1; ?>">Trước</a>
                 </li>
 
                 <?php for ($i = 1; $i <= $total_pages; $i++): ?>
                 <li class="page-item <?php echo ($page == $i) ? 'active' : ''; ?>">
-                    <a class="page-link" href="index.php?list_users&page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                    <a class="page-link" href="index.php?list_accounts&page=<?php echo $i; ?>"><?php echo $i; ?></a>
                 </li>
                 <?php endfor; ?>
 
                 <li class="page-item <?php echo ($page >= $total_pages) ? 'disabled' : ''; ?>">
-                    <a class="page-link" href="index.php?list_users&page=<?php echo $page + 1; ?>">Sau</a>
+                    <a class="page-link" href="index.php?list_accounts&page=<?php echo $page + 1; ?>">Sau</a>
                 </li>
             </ul>
         </nav>
