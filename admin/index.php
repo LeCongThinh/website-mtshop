@@ -1,7 +1,12 @@
 <?php
 include('../includes/connect.php');
 include('../functions/common_functions.php');
-session_start();
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+include('../functions/admin/authentication/check_admin.php');
 
 if (!isset($_SESSION['admin_id'])) {
     header("Location: ./admin_login.php");
@@ -291,7 +296,7 @@ if ($row = mysqli_fetch_array($get_user_result)) {
     <div class="flex-fill">
         <!-- Top Header -->
         <header class="admin-header d-flex justify-content-between align-items-center">
-            <h5 class="m-0 text-muted">Hệ thống Quản trị Laptop</h5>
+            <h5 class="m-0 text-muted">Hệ thống Quản trị MTShop</h5>
             <div class="d-flex align-items-center">
                 <div class="text-end me-3">
                     <div class="fw-bold mb-0"><?php echo $admin_name; ?></div>
