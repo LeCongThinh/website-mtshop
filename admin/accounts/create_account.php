@@ -1,14 +1,14 @@
 <?php
 if (isset($_POST['insert_account'])) {
     // Làm sạch dữ liệu đầu vào
-    $user_name     = mysqli_real_escape_string($con, $_POST['user_name']);
-    $user_email    = mysqli_real_escape_string($con, $_POST['user_email']);
+    $user_name = mysqli_real_escape_string($con, $_POST['user_name']);
+    $user_email = mysqli_real_escape_string($con, $_POST['user_email']);
     $user_password = $_POST['user_password'];
     $hash_password = password_hash($user_password, PASSWORD_DEFAULT);
-    $user_phone    = mysqli_real_escape_string($con, $_POST['user_phone']);
-    $user_address  = mysqli_real_escape_string($con, $_POST['user_address']);
-    $user_role     = $_POST['user_role'];
-    $user_status   = 'active';
+    $user_phone = mysqli_real_escape_string($con, $_POST['user_phone']);
+    $user_address = mysqli_real_escape_string($con, $_POST['user_address']);
+    $user_role = $_POST['user_role'];
+    $user_status = 'active';
 
     // 1. Kiểm tra email trùng lặp trước khi xử lý file (để đỡ tốn tài nguyên)
     $select_query = "SELECT * FROM `users` WHERE email='$user_email'";
@@ -26,9 +26,8 @@ if (isset($_POST['insert_account'])) {
             $file_extension = pathinfo($user_avatar, PATHINFO_EXTENSION);
             $new_file_name = date('YmdHis') . '_' . uniqid() . '.' . $file_extension;
 
-            // XÁC ĐỊNH ĐƯỜNG DẪN TUYỆT ĐỐI (Dùng cho lệnh move_uploaded_file)
-            // dirname(__DIR__) sẽ đưa bạn ra thư mục 'admin' từ thư mục 'accounts'
-            $admin_path = dirname(__DIR__); 
+            // Lưu ảnh ở admin/admin_images/avatars/ để dễ quản lý và tránh lộn với các file khác
+            $admin_path = dirname(__DIR__);
             $upload_directory = $admin_path . DIRECTORY_SEPARATOR . 'admin_images' . DIRECTORY_SEPARATOR . 'avatars' . DIRECTORY_SEPARATOR;
 
             // Kiểm tra và tạo thư mục nếu chưa có
@@ -40,7 +39,7 @@ if (isset($_POST['insert_account'])) {
 
             // 3. Thực hiện di chuyển file vào thư mục vật lý
             if (move_uploaded_file($user_avatar_tmp, $physical_path)) {
-                
+
                 // ĐƯỜNG DẪN LƯU VÀO DATABASE (Đúng yêu cầu của bạn)
                 $db_path = "avatars/" . $new_file_name;
 
