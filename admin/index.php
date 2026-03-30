@@ -246,16 +246,26 @@ if ($row = mysqli_fetch_array($get_user_result)) {
 
             <div class="px-4 py-2 small text-uppercase text-muted" style="font-size: 0.7rem;">Quản lý danh mục</div>
             <li class="nav-item">
-                <a href="index.php?view_categories" class="nav-link <?php echo isActive('view_categories'); ?>">
-                    <i class="fas fa-th-list"></i> Danh sách danh mục & loại SP
+                <a href="index.php?view_category" class="nav-link <?php echo isActive('view_category'); ?>">
+                    <i class="fas fa-th-list"></i> Danh sách danh mục
                 </a>
             </li>
             <li class="nav-item">
-                <a href="index.php?view_brands" class="nav-link <?php echo isActive('view_brands'); ?>">
-                    <i class="fas fa-copyright"></i> Thêm mới danh mục & loại SP
+                <a href="#" class="nav-link">
+                    <i class="fas fa-copyright"></i> Thêm mới danh mục
                 </a>
             </li>
-
+            <div class="px-4 py-2 small text-uppercase text-muted" style="font-size: 0.7rem;">Quản lý hãng sản xuất</div>
+            <li class="nav-item">
+                <a href="index.php?view_brand" class="nav-link <?php echo isActive('view_brand'); ?>">
+                    <i class="fas fa-th-list"></i> Danh sách hãng
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-copyright"></i> Thêm mới hãng
+                </a>
+            </li>
             <div class="px-4 py-2 small text-uppercase text-muted" style="font-size: 0.7rem;">Quản lý đơn hàng</div>
             <li class="nav-item">
                 <a href="index.php?list_orders" class="nav-link <?php echo isActive('list_orders'); ?>">
@@ -345,11 +355,12 @@ if ($row = mysqli_fetch_array($get_user_result)) {
                     if (isset($_GET['delete_product'])) {
                         include('./delete_product.php');
                     }
-                    if (isset($_GET['view_categories'])) {
-                        include('./view_categories.php');
+                    if (isset($_GET['view_category'])) {
+                        include('./categories/view_category.php');
                     }
-                    if (isset($_GET['view_brands'])) {
-                        include('./view_brands.php');
+
+                    if (isset($_GET['view_brand'])) {
+                        include('./brands/view_brand.php');
                     }
                     if (isset($_GET['list_orders'])) {
                         include('./list_orders.php');
