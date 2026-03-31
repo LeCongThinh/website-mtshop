@@ -263,7 +263,7 @@ if ($row = mysqli_fetch_array($get_user_result)) {
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                 <a href="index.php?create_brand" class="nav-link <?php echo isActive('create_brand'); ?>">
                     <i class="fas fa-copyright"></i> Thêm mới loại SP
                 </a>
             </li>
@@ -364,6 +364,9 @@ if ($row = mysqli_fetch_array($get_user_result)) {
                     }
                     if (isset($_GET['view_brand'])) {
                         include('./brands/view_brand.php');
+                    }
+                    if (isset($_GET['create_brand'])) {
+                        include('./brands/create_brand.php');
                     }
                     if (isset($_GET['list_orders'])) {
                         include('./list_orders.php');

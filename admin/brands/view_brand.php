@@ -63,40 +63,40 @@
                             }
 
                             echo "
-                <tr>
-                    <td class='text-start'><strong>$brand_name</strong></td>
-                    <td class='text-start'><code class='text-secondary'>$brand_slug</code></td>
-                    <td class='text-center'>$status_html</td>
-                    <td class='text-center'>
-                        <div class='d-flex gap-2 justify-content-center'>
-                            <!-- Nút Sửa -->
-                            <a href='index.php?edit_brand=$brand_id' class='text-primary' title='Sửa'>
-                                <i class='fas fa-edit'></i>
-                            </a>
+                            <tr>
+                                <td class='text-start'><strong>$brand_name</strong></td>
+                                <td class='text-start'><code class='text-secondary'>$brand_slug</code></td>
+                                <td class='text-center'>$status_html</td>
+                                <td class='text-center'>
+                                    <div class='d-flex gap-2 justify-content-center'>
+                                        <!-- Nút Sửa -->
+                                        <a href='index.php?edit_brand=$brand_id' class='text-primary' title='Sửa'>
+                                            <i class='fas fa-edit'></i>
+                                        </a>
 
-                            <!-- Nút Xóa -->
-                            <a href='#' class='text-danger' data-bs-toggle='modal' data-bs-target='#delModal_brand_$brand_id' title='Xóa'>
-                                <i class='fas fa-trash'></i>
-                            </a>
-                        </div>
+                                        <!-- Nút Xóa -->
+                                        <a href='#' class='text-danger' data-bs-toggle='modal' data-bs-target='#delModal_brand_$brand_id' title='Xóa'>
+                                            <i class='fas fa-trash'></i>
+                                        </a>
+                                    </div>
 
-                        <!-- Modal Xác nhận xóa -->
-                        <div class='modal fade' id='delModal_brand_$brand_id' tabindex='-1' aria-hidden='true'>
-                            <div class='modal-dialog modal-dialog-centered'>
-                                <div class='modal-content'>
-                                    <div class='modal-body text-center p-4 text-dark'>
-                                        <h4 class='text-danger mb-3'>Xác nhận xóa?</h4>
-                                        <p>Bạn có chắc muốn xóa thương hiệu: <strong>$brand_name</strong>?</p>
-                                        <div class='d-flex justify-content-center gap-2 mt-4'>
-                                            <button type='button' class='btn btn-light border' data-bs-dismiss='modal'>Hủy bỏ</button>
-                                            <a href='index.php?delete_brand=$brand_id' class='btn btn-danger px-4 text-white'>Đồng ý xóa</a>
+                                    <!-- Modal Xác nhận xóa -->
+                                    <div class='modal fade' id='delModal_brand_$brand_id' tabindex='-1' aria-hidden='true'>
+                                        <div class='modal-dialog modal-dialog-centered'>
+                                            <div class='modal-content'>
+                                                <div class='modal-body text-center p-4 text-dark'>
+                                                    <h4 class='text-danger mb-3'>Xác nhận xóa?</h4>
+                                                    <p>Bạn có chắc muốn xóa thương hiệu: <strong>$brand_name</strong>?</p>
+                                                    <div class='d-flex justify-content-center gap-2 mt-4'>
+                                                        <button type='button' class='btn btn-light border' data-bs-dismiss='modal'>Hủy bỏ</button>
+                                                        <a href='index.php?delete_brand=$brand_id' class='btn btn-danger px-4 text-white'>Đồng ý xóa</a>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>";
+                                </td>
+                            </tr>";
                         }
                     } else {
                         echo "<tr><td colspan='4' class='text-center'>Không có dữ liệu thương hiệu.</td></tr>";
