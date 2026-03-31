@@ -46,18 +46,28 @@ function create_slug($string)
     $string = preg_replace('/[\s-]+/', '-', $string);
     return $string;
 }
-    
+
 if (isset($_POST['insert_category_btn'])) {
     $name = mysqli_real_escape_string($con, trim($_POST['name']));
     $parent_id = $_POST['parent_id'];
 
     $slug = create_slug($name);
 
-    $check_query = "SELECT * FROM `categories` WHERE `name` = '$name' AND `deleted_at` IS NULL LIMIT 1";
+    $name_lower = mb_strtolower($name, 'UTF-8');
+    $check_query = "SELECT id, deleted_at FROM `categories` 
+                    WHERE LOWER(`name`) = LOWER('$name') OR `slug` = '$slug' 
+                    LIMIT 1";
+
     $check_result = mysqli_query($con, $check_query);
 
     if (mysqli_num_rows($check_result) > 0) {
-        $name_error = "Tên danh mục '$name' đã tồn tại trong hệ thống!";
+       $row = mysqli_fetch_assoc($check_result);
+        // Kiểm tra xem nó tồn tại ở dạng nào để báo lỗi chi tiết hơn (Tùy chọn)
+        if ($row['deleted_at'] != NULL) {
+            $name_error = "Danh mục '$name' đã tồn tại. Vui lòng chọn tên khác hoặc khôi phục";
+        } else {
+            $name_error = "Tên danh mục '$name' đã tồn tại và đang hoạt động!";
+        }
     } else {
         $insert_parent = empty($parent_id) ? "NULL" : "'$parent_id'";
 

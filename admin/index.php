@@ -340,13 +340,7 @@ if ($row = mysqli_fetch_array($get_user_result)) {
                 <!-- Area for Dynamic Content -->
                 <div class="card card-custom p-4">
                     <?php
-                    // Logic PHP giữ nguyên của bạn
-                    if (isset($_GET['insert_category'])) {
-                        include('./insert_categories.php');
-                    }
-                    if (isset($_GET['insert_brand'])) {
-                        include('./insert_brands.php');
-                    }
+                    // Quản lý sản phẩm
                     if (isset($_GET['view_products'])) {
                         include('./view_products.php');
                     }
@@ -356,24 +350,31 @@ if ($row = mysqli_fetch_array($get_user_result)) {
                     if (isset($_GET['delete_product'])) {
                         include('./delete_product.php');
                     }
+                    // Quản lý danh mục
                     if (isset($_GET['view_category'])) {
                         include('./categories/view_category.php');
                     }
                     if (isset($_GET['create_category'])) {
                         include('./categories/create_category.php');
                     }
+                    if (isset($_GET['edit_category'])) {
+                        include('./categories/edit_category.php');
+                    }
+                    // Quan lý loại sản phẩm
                     if (isset($_GET['view_brand'])) {
                         include('./brands/view_brand.php');
                     }
                     if (isset($_GET['create_brand'])) {
                         include('./brands/create_brand.php');
                     }
+                    // Quản lý đơn hàng
                     if (isset($_GET['list_orders'])) {
                         include('./list_orders.php');
                     }
                     if (isset($_GET['list_payments'])) {
                         include('./list_payments.php');
                     }
+                    // Quản lý tài khoản
                     if (isset($_GET['list_accounts'])) {
                         include('./accounts/list_accounts.php');
                     }
