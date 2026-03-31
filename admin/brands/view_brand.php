@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Brands Page</title>
+    <title>Danh sách loại sản phẩm</title>
 </head>
 
 <body>
@@ -12,7 +12,7 @@
         <div class="categ-header">
             <div class="sub-title">
                 <span class="shape"></span>
-                <h2>All Brands</h2>
+                <h3>Danh sách loại sản phẩm</h3>
             </div>
         </div>
         <div class="table-data">

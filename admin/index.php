@@ -251,19 +251,20 @@ if ($row = mysqli_fetch_array($get_user_result)) {
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="index.php?create_category" class="nav-link <?php echo isActive('create_category'); ?>">
                     <i class="fas fa-copyright"></i> Thêm mới danh mục
                 </a>
             </li>
-            <div class="px-4 py-2 small text-uppercase text-muted" style="font-size: 0.7rem;">Quản lý hãng sản xuất</div>
+            <div class="px-4 py-2 small text-uppercase text-muted" style="font-size: 0.7rem;">Quản lý loại sản phẩm
+            </div>
             <li class="nav-item">
                 <a href="index.php?view_brand" class="nav-link <?php echo isActive('view_brand'); ?>">
-                    <i class="fas fa-th-list"></i> Danh sách hãng
+                    <i class="fas fa-th-list"></i> Danh sách loại SP
                 </a>
             </li>
             <li class="nav-item">
                 <a href="#" class="nav-link">
-                    <i class="fas fa-copyright"></i> Thêm mới hãng
+                    <i class="fas fa-copyright"></i> Thêm mới loại SP
                 </a>
             </li>
             <div class="px-4 py-2 small text-uppercase text-muted" style="font-size: 0.7rem;">Quản lý đơn hàng</div>
@@ -358,7 +359,9 @@ if ($row = mysqli_fetch_array($get_user_result)) {
                     if (isset($_GET['view_category'])) {
                         include('./categories/view_category.php');
                     }
-
+                    if (isset($_GET['create_category'])) {
+                        include('./categories/create_category.php');
+                    }
                     if (isset($_GET['view_brand'])) {
                         include('./brands/view_brand.php');
                     }
