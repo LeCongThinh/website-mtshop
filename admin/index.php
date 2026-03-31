@@ -367,6 +367,9 @@ if ($row = mysqli_fetch_array($get_user_result)) {
                     if (isset($_GET['create_brand'])) {
                         include('./brands/create_brand.php');
                     }
+                     if (isset($_GET['edit_brand'])) {
+                        include('./brands/edit_brand.php');
+                    }
                     // Quản lý đơn hàng
                     if (isset($_GET['list_orders'])) {
                         include('./list_orders.php');

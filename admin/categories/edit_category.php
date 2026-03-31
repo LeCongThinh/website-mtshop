@@ -13,13 +13,13 @@ if (isset($_GET['edit_category'])) {
 }
 ?>
 
-<div class="container mt-4">
+<div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <?php echo $alert; ?>
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white py-3">
-                    <h5 class="mb-0 text-primary">Chỉnh sửa danh mục</h5>
+                    <h5 class="mb-0 text-secondary">Cập nhật danh mục</h5>
                 </div>
                 <div class="card-body p-4">
                     <form action="" method="POST">
