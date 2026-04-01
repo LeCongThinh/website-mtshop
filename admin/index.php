@@ -1,7 +1,7 @@
 <?php
 include('../includes/connect.php');
 include('../functions/common_functions.php');
-
+ob_start();
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }

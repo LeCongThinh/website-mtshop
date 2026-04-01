@@ -11,6 +11,34 @@
 
 <body>
     <div class="container">
+        <?php if (isset($_GET['status']) && $_GET['status'] == 'success'): ?>
+            <div class="alert alert-success alert-dismissible fade show d-flex align-items-center shadow-sm" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                <div>
+                    <strong>Thành công!</strong> Tài khoản mới đã được thêm vào hệ thống.
+                </div>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($_GET['error'])): ?>
+            <?php
+            $error_msg = match ($_GET['error']) {
+                'db_error' => 'Lỗi cơ sở dữ liệu, không thể lưu tài khoản.',
+                'upload_failed' => 'Lỗi hệ thống: Không thể ghi file ảnh vào thư mục.',
+                'no_image' => 'Vui lòng chọn ảnh đại diện cho tài khoản.',
+                'email_exists' => 'Email này đã tồn tại, vui lòng dùng email khác.',
+                default => 'Đã xảy ra lỗi không xác định.'
+            };
+            ?>
+            <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center shadow-sm" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <div>
+                    <strong>Lỗi!</strong> <?php echo $error_msg; ?>
+                </div>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
         <div class="categ-header mb-4">
             <div class="sub-title d-flex align-items-center gap-2">
                 <span class="shape bg-primary"

@@ -32,7 +32,8 @@ if (isset($_POST['insert_account'])) {
             // ĐƯỜNG DẪN VẬT LÝ (Tính từ file create-account.php lùi ra website-mtshop)
             // Cấu trúc: functions/admin/accounts/create-account.php
             // Cần lùi 3 cấp để ra thư mục gốc, rồi vào admin_images/avatars/
-            $upload_directory = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'admin_images' . DIRECTORY_SEPARATOR . 'avatars' . DIRECTORY_SEPARATOR;
+            $base_dir = dirname(dirname(dirname(__DIR__)));
+            $upload_directory = $base_dir . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'admin_images' . DIRECTORY_SEPARATOR . 'avatars' . DIRECTORY_SEPARATOR;
 
             if (!is_dir($upload_directory)) {
                 mkdir($upload_directory, 0777, true);
@@ -51,16 +52,19 @@ if (isset($_POST['insert_account'])) {
                 $sql_execute = mysqli_query($con, $insert_query);
 
                 if ($sql_execute) {
-                    echo "<script>alert('Thêm tài khoản thành công!')</script>";
-                    echo "<script>window.open('index.php?list_accounts','_self')</script>";
+                    header("Location: index.php?list_accounts&status=success");
+                    exit();
                 } else {
-                    echo "<script>alert('Lỗi truy vấn Database!')</script>";
+                    header("Location: index.php?insert_account&error=db_error");
+                    exit();
                 }
             } else {
-                echo "<script>alert('Lỗi: Không thể ghi file vào hệ thống.')</script>";
+                header("Location: index.php?insert_account&error=upload_failed");
+                exit();
             }
         } else {
-            echo "<script>alert('Vui lòng chọn ảnh đại diện!')</script>";
+            header("Location: index.php?insert_account&error=no_image");
+            exit();
         }
     }
 }

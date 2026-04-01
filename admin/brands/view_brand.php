@@ -9,21 +9,51 @@
 
 <body>
     <div class="container">
-        <!-- Phần hiển thị thông báo Alert (nếu có) -->
-        <?php if (isset($_GET['msg'])): ?>
-            <div class="alert alert-<?php echo (strpos($_GET['msg'], 'success') !== false) ? 'success' : 'danger'; ?> alert-dismissible fade show"
-                role="alert">
+        <div class="container-fluid px-0">
+            <?php if (isset($_GET['status']) || isset($_GET['msg'])): ?>
                 <?php
-                if ($_GET['msg'] == 'delete_success')
-                    echo "Xóa loại sản phẩm thành công.";
-                if ($_GET['msg'] == 'restore_success')
-                    echo "Khôi phục loại sản phẩm thành công.";
-                if ($_GET['msg'] == 'delete_error' || $_GET['msg'] == 'restore_error')
-                    echo "Có lỗi xảy ra. Vui lòng thử lại.";
+                // Lấy giá trị từ cả status hoặc msg (ưu tiên status)
+                $status_val = $_GET['status'] ?? $_GET['msg'] ?? null;
+
+                $success_msg = match ($status_val) {
+                    'success' => 'Đã thêm loại sản phẩm vào hệ thống.',
+                    'updated' => 'Cập nhật loại sản phẩm thành công.',
+                    'deleted',
+                    'delete_success' => 'Đã xóa loại sản phẩm khỏi hệ thống.',
+                    'restored',
+                    'restore_success' => 'Khôi phục loại sản phẩm thành công.',
+                    default => null
+                };
                 ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        <?php endif; ?>
+
+                <?php if ($success_msg): ?>
+                    <div class="alert alert-success alert-dismissible fade show d-flex align-items-center shadow-sm mb-3"
+                        role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <div>
+                            <strong>Thành công!</strong> <?php echo $success_msg; ?>
+                        </div>
+                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
+
+            <?php
+            // Kiểm tra nếu có error hoặc msg chứa chữ 'error'
+            $has_error = isset($_GET['error']) || (isset($_GET['msg']) && strpos($_GET['msg'], 'error') !== false);
+
+            if ($has_error):
+                ?>
+                <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center shadow-sm mb-3"
+                    role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <div>
+                        <strong>Lỗi!</strong> Thao tác thất bại, vui lòng kiểm tra lại.
+                    </div>
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
+        </div>
 
         <div class="categ-header mb-4">
             <div class="sub-title d-flex align-items-center gap-2">
@@ -94,8 +124,8 @@
                                                 <div class="d-flex gap-2 justify-content-center">
                                                     <?php if (!$is_inactive): ?>
                                                         <!-- Nút Sửa & Xóa khi đang Active -->
-                                                        <a href="index.php?edit_brand=<?php echo $brand_id; ?>" class='btn btn-sm btn-outline-primary'
-                                                            title="Sửa">
+                                                        <a href="index.php?edit_brand=<?php echo $brand_id; ?>"
+                                                            class='btn btn-sm btn-outline-primary' title="Sửa">
                                                             <i class="fas fa-edit"></i>
                                                         </a>
                                                         <a href="#" class='btn btn-sm btn-outline-danger' data-bs-toggle="modal"

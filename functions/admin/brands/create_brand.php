@@ -25,8 +25,20 @@ function create_brand_slug($string)
         '/[^a-zA-Z0-9\s-]/'
     );
     $replace = array(
-        'a', 'e', 'i', 'o', 'u', 'y', 'd',
-        'a', 'e', 'i', 'o', 'u', 'y', 'd',
+        'a',
+        'e',
+        'i',
+        'o',
+        'u',
+        'y',
+        'd',
+        'a',
+        'e',
+        'i',
+        'o',
+        'u',
+        'y',
+        'd',
         ''
     );
     $string = preg_replace($search, $replace, $string);
@@ -47,7 +59,7 @@ if (isset($_POST['add_brand_btn'])) {
         $check_query = "SELECT id FROM `brands` 
                         WHERE LOWER(`name`) = '$brand_name_lower' 
                         AND `deleted_at` IS NULL LIMIT 1";
-        
+
         $check_result = mysqli_query($con, $check_query);
 
         if (mysqli_num_rows($check_result) > 0) {
@@ -57,20 +69,11 @@ if (isset($_POST['add_brand_btn'])) {
                              VALUES ('$brand_name', '$brand_slug', 'active', NOW())";
 
             if (mysqli_query($con, $insert_query)) {
-                $alert = '
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="fas fa-check-circle me-2"></i>
-                    <strong>Thành công!</strong> Đã thêm loại sản phẩm mới.
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>';
-                unset($_POST['brand_name']);
+                header("Location: index.php?view_brand&status=success");
+                exit();
             } else {
-                $alert = '
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    <strong>Lỗi!</strong> Không thể thêm dữ liệu: ' . mysqli_error($con) . '
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>';
+                header("Location: index.php?add_brand&error=db_error");
+                exit();
             }
         }
     }

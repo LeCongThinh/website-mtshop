@@ -65,12 +65,10 @@ if (isset($_POST['update_brand_btn'])) {
         $update_result = mysqli_query($con, $update_query);
 
         if ($update_result) {
-            // Thành công: Quay lại trang edit kèm mã success (để hiển thị alert)
-            header("Location: ../../../admin/index.php?edit_brand=$brand_id&msg=update_success");
+            header("Location: ../../../admin/index.php?view_brand&status=updated");
             exit();
         } else {
-            // Thất bại: Quay lại trang edit kèm mã error
-            header("Location: ../../../admin/index.php?edit_brand=$brand_id&msg=update_error");
+            header("Location: ../../../admin/index.php?edit_brand=$brand_id&error=db_error");
             exit();
         }
     }
