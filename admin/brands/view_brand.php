@@ -25,10 +25,11 @@
             </div>
         <?php endif; ?>
 
-        <div class="categ-header">
-            <div class="sub-title">
-                <span class="shape"></span>
-                <h3>Danh sách thương hiệu</h3>
+        <div class="categ-header mb-4">
+            <div class="sub-title d-flex align-items-center gap-2">
+                <span class="shape bg-primary"
+                    style="width: 5px; height: 25px; display: inline-block; border-radius: 10px;"></span>
+                <h3 class="mb-0">Danh sách loại sản phẩm</h3>
             </div>
         </div>
 
@@ -53,108 +54,119 @@
             $get_brand_result = mysqli_query($con, $get_brand_query);
             ?>
 
-            <table class="table table-bordered table-hover align-middle">
-                <thead class="table-dark text-center">
-                    <tr>
-                        <th>Tên thương hiệu</th>
-                        <th>Slug</th>
-                        <th>Trạng thái</th>
-                        <th>Hoạt động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    if (mysqli_num_rows($get_brand_result) > 0) {
-                        while ($row = mysqli_fetch_array($get_brand_result)) {
-                            $brand_id = $row['id'];
-                            $brand_name = $row['name'];
-                            $brand_slug = $row['slug'];
-                            $status = $row['status'];
-                            $deleted_at = $row['deleted_at'];
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="text-start">Tên thương hiệu</th>
+                                    <th class="text-start">Slug</th>
+                                    <th class="text-center">Trạng thái</th>
+                                    <th class="text-center">Hoạt động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                if (mysqli_num_rows($get_brand_result) > 0) {
+                                    while ($row = mysqli_fetch_array($get_brand_result)) {
+                                        $brand_id = $row['id'];
+                                        $brand_name = $row['name'];
+                                        $brand_slug = $row['slug'];
+                                        $status = $row['status'];
+                                        $deleted_at = $row['deleted_at'];
 
-                            // Logic xác định dòng này có "Active" hay không
-                            $is_inactive = ($deleted_at !== NULL || $status == 'inactive' || $status == 0);
+                                        // Logic xác định dòng này có "Active" hay không
+                                        $is_inactive = ($deleted_at !== NULL || $status == 'inactive' || $status == 0);
 
-                            if ($is_inactive) {
-                                $status_html = "<span class='badge bg-danger'>Không hoạt động</span>";
-                            } else {
-                                $status_html = "<span class='badge bg-success'>Hoạt động</span>";
-                            }
-                            ?>
-                            <tr>
-                                <td class="text-start"><strong><?php echo $brand_name; ?></strong></td>
-                                <td class="text-start"><code class="text-secondary"><?php echo $brand_slug; ?></code></td>
-                                <td class="text-center"><?php echo $status_html; ?></td>
-                                <td class="text-center">
-                                    <div class="d-flex gap-2 justify-content-center">
-                                        <?php if (!$is_inactive): ?>
-                                            <!-- Nút Sửa & Xóa khi đang Active -->
-                                            <a href="index.php?edit_brand=<?php echo $brand_id; ?>" class="text-primary"
-                                                title="Sửa">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a href="#" class="text-danger" data-bs-toggle="modal"
-                                                data-bs-target="#delModal_brand_<?php echo $brand_id; ?>" title="Xóa">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
-                                        <?php else: ?>
-                                            <!-- Nút Khôi phục khi đang Inactive -->
-                                            <a href="../functions/admin/brands/restore_brand.php?id=<?php echo $brand_id; ?>"
-                                                class="btn btn-outline-success btn-sm px-3" style="font-size: 0.75rem;">
-                                                <i class="fas fa-undo-alt me-1"></i> Khôi phục
-                                            </a>
-                                        <?php endif; ?>
-                                    </div>
+                                        if ($is_inactive) {
+                                            $status_html = "<span class='badge bg-danger'>Không hoạt động</span>";
+                                        } else {
+                                            $status_html = "<span class='badge bg-success'>Hoạt động</span>";
+                                        }
+                                        ?>
+                                        <tr>
+                                            <td class="text-start"><strong><?php echo $brand_name; ?></strong></td>
+                                            <td class="text-start"><code
+                                                    class="text-secondary"><?php echo $brand_slug; ?></code></td>
+                                            <td class="text-center"><?php echo $status_html; ?></td>
+                                            <td class="text-center">
+                                                <div class="d-flex gap-2 justify-content-center">
+                                                    <?php if (!$is_inactive): ?>
+                                                        <!-- Nút Sửa & Xóa khi đang Active -->
+                                                        <a href="index.php?edit_brand=<?php echo $brand_id; ?>" class='btn btn-sm btn-outline-primary'
+                                                            title="Sửa">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <a href="#" class='btn btn-sm btn-outline-danger' data-bs-toggle="modal"
+                                                            data-bs-target="#delModal_brand_<?php echo $brand_id; ?>" title="Xóa">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </a>
+                                                    <?php else: ?>
+                                                        <!-- Nút Khôi phục khi đang Inactive -->
+                                                        <a href="../functions/admin/brands/restore_brand.php?id=<?php echo $brand_id; ?>"
+                                                            class="btn btn-outline-success btn-sm px-3" style="font-size: 0.75rem;">
+                                                            <i class="fas fa-undo-alt me-1"></i> Khôi phục
+                                                        </a>
+                                                    <?php endif; ?>
+                                                </div>
 
-                                    <!-- Modal xác nhận xóa -->
-                                    <?php if (!$is_inactive): ?>
-                                        <div class="modal fade" id="delModal_brand_<?php echo $brand_id; ?>" tabindex="-1"
-                                            aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered text-dark">
-                                                <div class="modal-content">
-                                                    <div class="modal-body text-center p-4">
-                                                        <h4 class="text-danger mb-3">Xác nhận?</h4>
-                                                        <p>Thương hiệu <strong><?php echo $brand_name; ?></strong> sẽ chuyển sang
-                                                            ngừng hoạt động.</p>
-                                                        <div class="d-flex justify-content-center gap-2 mt-4">
-                                                            <button type="button" class="btn btn-light border"
-                                                                data-bs-dismiss="modal">Hủy</button>
-                                                            <a href="../functions/admin/brands/delete_brand.php?id=<?php echo $brand_id; ?>"
-                                                                class="btn btn-danger px-4 text-white">Xác nhận</a>
+                                                <!-- Modal xác nhận xóa -->
+                                                <?php if (!$is_inactive): ?>
+                                                    <div class="modal fade" id="delModal_brand_<?php echo $brand_id; ?>"
+                                                        tabindex="-1" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered text-dark">
+                                                            <div class="modal-content">
+                                                                <div class="modal-body text-center p-4">
+                                                                    <h4 class="text-danger mb-3">Xác nhận?</h4>
+                                                                    <p>Thương hiệu <strong><?php echo $brand_name; ?></strong> sẽ
+                                                                        chuyển sang
+                                                                        ngừng hoạt động.</p>
+                                                                    <div class="d-flex justify-content-center gap-2 mt-4">
+                                                                        <button type="button" class="btn btn-light border"
+                                                                            data-bs-dismiss="modal">Hủy</button>
+                                                                        <a href="../functions/admin/brands/delete_brand.php?id=<?php echo $brand_id; ?>"
+                                                                            class="btn btn-danger px-4 text-white">Xác nhận</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                        <?php }
-                    } else {
-                        echo "<tr><td colspan='4' class='text-center text-muted'>Không có dữ liệu.</td></tr>";
-                    }
-                    ?>
-                </tbody>
-            </table>
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                    <?php }
+                                } else {
+                                    echo "<tr><td colspan='4' class='text-center text-muted'>Không có dữ liệu.</td></tr>";
+                                }
+                                ?>
+                            </tbody>
+                        </table>
 
-            <!-- Phân trang -->
-            <?php if ($total_pages > 1): ?>
-                <nav class="mt-4">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item <?php echo ($page <= 1) ? 'disabled' : ''; ?>">
-                            <a class="page-link" href="index.php?view_brand&page=<?php echo $page - 1; ?>">Trước</a>
-                        </li>
-                        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                            <li class="page-item <?php echo ($page == $i) ? 'active' : ''; ?>">
-                                <a class="page-link" href="index.php?view_brand&page=<?php echo $i; ?>"><?php echo $i; ?></a>
-                            </li>
-                        <?php endfor; ?>
-                        <li class="page-item <?php echo ($page >= $total_pages) ? 'disabled' : ''; ?>">
-                            <a class="page-link" href="index.php?view_brand&page=<?php echo $page + 1; ?>">Sau</a>
-                        </li>
-                    </ul>
-                </nav>
-            <?php endif; ?>
+                        <!-- Phân trang -->
+                        <?php if ($total_pages > 1): ?>
+                            <nav class="mt-4">
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item <?php echo ($page <= 1) ? 'disabled' : ''; ?>">
+                                        <a class="page-link"
+                                            href="index.php?view_brand&page=<?php echo $page - 1; ?>">Trước</a>
+                                    </li>
+                                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                        <li class="page-item <?php echo ($page == $i) ? 'active' : ''; ?>">
+                                            <a class="page-link"
+                                                href="index.php?view_brand&page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                                        </li>
+                                    <?php endfor; ?>
+                                    <li class="page-item <?php echo ($page >= $total_pages) ? 'disabled' : ''; ?>">
+                                        <a class="page-link"
+                                            href="index.php?view_brand&page=<?php echo $page + 1; ?>">Sau</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </body>

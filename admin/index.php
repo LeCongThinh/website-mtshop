@@ -293,7 +293,7 @@ if ($row = mysqli_fetch_array($get_user_result)) {
 
             <div class="px-4 py-2 small text-uppercase text-muted" style="font-size: 0.7rem;">Quản lý bài viết</div>
             <li class="nav-item">
-                <a href="index.php?list_posts" class="nav-link <?php echo isActive('list_posts'); ?>">
+                <a href="index.php?view_post" class="nav-link <?php echo isActive('view_post'); ?>">
                     <i class="fas fa-newspaper"></i> Danh sách bài viết
                 </a>
             </li>
@@ -387,6 +387,17 @@ if ($row = mysqli_fetch_array($get_user_result)) {
                     if (isset($_GET['edit_user'])) {
                         include('./accounts/edit_account.php');
                     }
+                    // Quản lý bài viết
+                    if(isset($_GET['view_post'])) {
+                        include('./posts/view_post.php');
+                    }
+                    if(isset($_GET['create_post'])) {
+                        include('./posts/create_post.php');
+                    }
+                    if(isset($_GET['edit_post'])) {
+                        include('./posts/edit_post.php');
+                    }
+                    
 
                     // Mặc định nếu không chọn gì
                     if (empty($_SERVER['QUERY_STRING'])) {

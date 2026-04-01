@@ -10,8 +10,7 @@
 </head>
 
 <body>
-    
-    <div class="container mt-4">
+    <div class="container">
         <div class="categ-header mb-4">
             <div class="sub-title d-flex align-items-center gap-2">
                 <span class="shape bg-primary"
@@ -44,74 +43,76 @@
         ?>
 
 
-        <div class="table-data shadow-sm rounded border overflow-hidden">
-            <table class="table table-hover align-middle text-center mb-0">
-                <thead class="table-dark">
-                    <tr>
-                        <th width="5%">STT</th>
-                        <th>Tên tài khoản</th>
-                        <th>Email</th>
-                        <th>Số điện thoại</th>
-                        <th>Chức vụ</th>
-                        <th>Trạng thái</th>
-                        <th width="15%">Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    if (mysqli_num_rows($get_user_result) == 0) {
-                        echo "<tr><td colspan='7' class='py-4 text-muted'>Chưa có tài khoản nào trong hệ thống.</td></tr>";
-                    } else {
-                        // STT cộng dồn theo trang: Trang 1 (1-10), Trang 2 (11-20)...
-                        $id_number = $start + 1;
-                        while ($row = mysqli_fetch_array($get_user_result)) {
-                            $user_id = $row['id'];
-                            $username = $row['name'];
-                            $user_email = $row['email'];
-                            $user_phone = $row['phone'];
-                            $user_role = $row['role'];
-                            $user_status = $row['status'];
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th width="5%">STT</th>
+                                <th>Tên tài khoản</th>
+                                <th>Email</th>
+                                <th>Số điện thoại</th>
+                                <th>Chức vụ</th>
+                                <th>Trạng thái</th>
+                                <th width="15%" class="text-center">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            if (mysqli_num_rows($get_user_result) == 0) {
+                                echo "<tr><td colspan='7' class='py-4 text-muted'>Chưa có tài khoản nào trong hệ thống.</td></tr>";
+                            } else {
+                                // STT cộng dồn theo trang: Trang 1 (1-10), Trang 2 (11-20)...
+                                $id_number = $start + 1;
+                                while ($row = mysqli_fetch_array($get_user_result)) {
+                                    $user_id = $row['id'];
+                                    $username = $row['name'];
+                                    $user_email = $row['email'];
+                                    $user_phone = $row['phone'];
+                                    $user_role = $row['role'];
+                                    $user_status = $row['status'];
 
-                            // Xử lý hiển thị Chức vụ
-                            switch ($user_role) {
-                                case 'admin':
-                                    $role_display = "<span class='badge rounded-pill bg-danger'><i class='fas fa-shield-alt me-1'></i> Quản trị</span>";
-                                    break;
-                                case 'staff':
-                                    $role_display = "<span class='badge rounded-pill bg-primary'><i class='fas fa-user-tie me-1'></i> Nhân viên</span>";
-                                    break;
-                                default:
-                                    $role_display = "<span class='badge rounded-pill bg-secondary'><i class='fas fa-user me-1'></i> Khách hàng</span>";
-                                    break;
-                            }
-                            // 2. Xử lý hiển thị Trạng thái (Phải nằm trong while)
-                            $status_display = ($user_status === 'active')
-                                ? "<span class='badge bg-success-subtle text-success border border-success px-3'><i class='fas fa-circle me-1' style='font-size: 8px;'></i> Hoạt động</span>"
-                                : "<span class='badge bg-danger-subtle text-danger border border-danger px-3'><i class='fas fa-ban me-1'></i> Bị khóa</span>";
+                                    // Xử lý hiển thị Chức vụ
+                                    switch ($user_role) {
+                                        case 'admin':
+                                            $role_display = "<span class='badge rounded-pill bg-danger'><i class='fas fa-shield-alt me-1'></i> Quản trị</span>";
+                                            break;
+                                        case 'staff':
+                                            $role_display = "<span class='badge rounded-pill bg-primary'><i class='fas fa-user-tie me-1'></i> Nhân viên</span>";
+                                            break;
+                                        default:
+                                            $role_display = "<span class='badge rounded-pill bg-secondary'><i class='fas fa-user me-1'></i> Khách hàng</span>";
+                                            break;
+                                    }
+                                    // 2. Xử lý hiển thị Trạng thái (Phải nằm trong while)
+                                    $status_display = ($user_status === 'active')
+                                        ? "<span class='badge bg-success-subtle text-success border border-success px-3'><i class='fas fa-circle me-1' style='font-size: 8px;'></i> Hoạt động</span>"
+                                        : "<span class='badge bg-danger-subtle text-danger border border-danger px-3'><i class='fas fa-ban me-1'></i> Bị khóa</span>";
 
-                            // 3. Xử lý logic Nút bấm (Phải nằm trong while)
-                            if ($user_status === 'active') {
-                                $action_buttons = "
+                                    // 3. Xử lý logic Nút bấm (Phải nằm trong while)
+                                    if ($user_status === 'active') {
+                                        $action_buttons = "
                                 <a href='index.php?edit_user=$user_id' class='btn btn-sm btn-outline-primary' title='Sửa'>
                                     <i class='fas fa-edit'></i>
                                 </a>
                                 <button class='btn btn-sm btn-outline-danger' data-bs-toggle='modal' data-bs-target='#deleteModal_$user_id' title='Xóa'>
                                     <i class='fas fa-trash-alt'></i>
                                 </button>";
-                            } else {
-                                $action_buttons = "
+                                    } else {
+                                        $action_buttons = "
                                 <a href='../functions/admin/accounts/restore_account.php?restore_user=$user_id'
                                 class='btn btn-sm btn-outline-success px-3 d-flex align-items-center justify-content-center fw-bold shadow-sm' 
                                 style='height: 35px; font-size: 13px;' title='Khôi phục tài khoản' onclick=\"return confirm('Bạn có chắc chắn muốn khôi phục tài khoản này không?')\">
                                     <i class='fas fa-undo-alt me-1'></i> Khôi phục
                                 </a>";
-                            }
-                            // Xử lý hiển thị Trạng thái
-                            $status_display = ($user_status === 'active')
-                                ? "<span class='badge bg-success-subtle text-success border border-success px-3'><i class='fas fa-circle me-1' style='font-size: 8px;'></i> Hoạt động</span>"
-                                : "<span class='badge bg-danger-subtle text-danger border border-danger px-3'><i class='fas fa-ban me-1'></i> Bị khóa</span>";
+                                    }
+                                    // Xử lý hiển thị Trạng thái
+                                    $status_display = ($user_status === 'active')
+                                        ? "<span class='badge bg-success-subtle text-success border border-success px-3'><i class='fas fa-circle me-1' style='font-size: 8px;'></i> Hoạt động</span>"
+                                        : "<span class='badge bg-danger-subtle text-danger border border-danger px-3'><i class='fas fa-ban me-1'></i> Bị khóa</span>";
 
-                            echo "
+                                    echo "
                             <tr>
                                 <td>$id_number</td>
                                 <td class='text-start ps-4 fw-semibold'>$username</td>
@@ -129,49 +130,49 @@
                             <div class='modal fade' id='deleteModal_$user_id' tabindex='-1' aria-hidden='true'>
                                 <div class='modal-dialog modal-dialog-centered'>
                                     <div class='modal-content'>
-                                        <div class='modal-header'>
-                                            <h5 class='modal-title'>Xác nhận khóa</h5>
-                                            <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
-                                        </div>
-                                        <div class='modal-body text-start'>
-                                            Bạn có chắc chắn muốn khóa tài khoản của <strong>$username</strong> không? 
-                                            <p class='text-muted small mb-0'>Trạng thái sẽ được chuyển sang 'Bị khóa'.</p>
-                                        </div>
-                                        <div class='modal-footer'>
-                                            <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Hủy</button>
-                                            <a href='../functions/admin/accounts/delete_account.php?id=$user_id&action=deactivate' class='btn btn-danger'>Đồng ý khóa</a>
-                                        </div>
+                                        <div class='modal-body text-center p-4'>
+                                                <h4 class='text-danger mb-3'>Xác nhận?</h4>
+                                                <p>Tài khoản <strong>$username</strong> sẽ bị khóa.</p>
+                                                <div class='d-flex justify-content-center gap-2 mt-4'>
+                                                    <button type='button' class='btn btn-light border' data-bs-dismiss='modal'>Hủy</button>
+                                                    <a href='../functions/admin/accounts/delete_account.php?id=$user_id&action=deactivate' class='btn btn-danger px-4'>Đồng ý</a>
+                                                </div>
+                                            </div>
+                                        
                                     </div>
                                 </div>
                             </div>";
-                            $id_number++;
-                        }
-                    }
-                    ?>
-                </tbody>
-            </table>
+                                    $id_number++;
+                                }
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- --- HIỂN THỊ PHÂN TRANG --- -->
+                <?php if ($total_pages > 1): ?>
+                    <nav class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item <?php echo ($page <= 1) ? 'disabled' : ''; ?>">
+                                <a class="page-link" href="index.php?list_accounts&page=<?php echo $page - 1; ?>">Trước</a>
+                            </li>
+
+                            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                <li class="page-item <?php echo ($page == $i) ? 'active' : ''; ?>">
+                                    <a class="page-link"
+                                        href="index.php?list_accounts&page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                                </li>
+                            <?php endfor; ?>
+
+                            <li class="page-item <?php echo ($page >= $total_pages) ? 'disabled' : ''; ?>">
+                                <a class="page-link" href="index.php?list_accounts&page=<?php echo $page + 1; ?>">Sau</a>
+                            </li>
+                        </ul>
+                    </nav>
+                <?php endif; ?>
+            </div>
         </div>
-
-        <!-- --- HIỂN THỊ PHÂN TRANG --- -->
-        <?php if ($total_pages > 1): ?>
-            <nav class="mt-4">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item <?php echo ($page <= 1) ? 'disabled' : ''; ?>">
-                        <a class="page-link" href="index.php?list_accounts&page=<?php echo $page - 1; ?>">Trước</a>
-                    </li>
-
-                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                        <li class="page-item <?php echo ($page == $i) ? 'active' : ''; ?>">
-                            <a class="page-link" href="index.php?list_accounts&page=<?php echo $i; ?>"><?php echo $i; ?></a>
-                        </li>
-                    <?php endfor; ?>
-
-                    <li class="page-item <?php echo ($page >= $total_pages) ? 'disabled' : ''; ?>">
-                        <a class="page-link" href="index.php?list_accounts&page=<?php echo $page + 1; ?>">Sau</a>
-                    </li>
-                </ul>
-            </nav>
-        <?php endif; ?>
     </div>
 </body>
 
