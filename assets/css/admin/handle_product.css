@@ -1,0 +1,34 @@
+.specs-scroll-area {
+    max-height: 320px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 5px;
+}
+
+.specs-scroll-area::-webkit-scrollbar {
+    width: 6px;
+}
+
+.specs-scroll-area::-webkit-scrollbar-thumb {
+    background-color: #c7c7c8;
+    border-radius: 10px;
+}
+
+#gallery-preview {
+    max-height: 250px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 5px;
+    border: 1px dashed #dee2e6;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+}
+
+#gallery-preview::-webkit-scrollbar {
+    width: 6px;
+}
+
+#gallery-preview::-webkit-scrollbar-thumb {
+    background-color: #c7c7c8;
+    border-radius: 10px;
+}

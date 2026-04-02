@@ -233,12 +233,12 @@ if ($row = mysqli_fetch_array($get_user_result)) {
 
             <div class="px-4 py-2 small text-uppercase text-muted" style="font-size: 0.7rem;">Quản lý sản phẩm</div>
             <li class="nav-item">
-                <a href="index.php?view_products" class="nav-link <?php echo isActive('view_products'); ?>">
+                <a href="index.php?view_product" class="nav-link <?php echo isActive('view_product'); ?>">
                     <i class="fas fa-laptop"></i> Danh sách sản phẩm
                 </a>
             </li>
             <li class="nav-item">
-                <a href="insert_product.php" class="nav-link">
+                <a href="index.php?create_product" class="nav-link <?php echo isActive('create_product'); ?>">
                     <i class="fas fa-plus-circle"></i> Thêm mới sản phẩm
                 </a>
             </li>
@@ -341,11 +341,14 @@ if ($row = mysqli_fetch_array($get_user_result)) {
                 <div class="card card-custom p-4">
                     <?php
                     // Quản lý sản phẩm
-                    if (isset($_GET['view_products'])) {
-                        include('./view_products.php');
+                    if (isset($_GET['view_product'])) {
+                        include('./products/view_product.php');
+                    }
+                    if (isset($_GET['create_product'])) {
+                        include('./products/create_product.php');
                     }
                     if (isset($_GET['edit_product'])) {
-                        include('./edit_product.php');
+                        include('./products/edit_product.php');
                     }
                     if (isset($_GET['delete_product'])) {
                         include('./delete_product.php');

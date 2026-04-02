@@ -115,8 +115,8 @@
                                     }
                                     // 2. Xử lý hiển thị Trạng thái (Phải nằm trong while)
                                     $status_display = ($user_status === 'active')
-                                        ? "<span class='badge bg-success-subtle text-success border border-success px-3'><i class='fas fa-circle me-1' style='font-size: 8px;'></i> Hoạt động</span>"
-                                        : "<span class='badge bg-danger-subtle text-danger border border-danger px-3'><i class='fas fa-ban me-1'></i> Bị khóa</span>";
+                                        ? "<span class='badge bg-success'>Hoạt động</span>"
+                                        : "<span class='badge bg-danger'>Bị khóa</span>";
 
                                     // 3. Xử lý logic Nút bấm (Phải nằm trong while)
                                     if ($user_status === 'active') {
@@ -137,8 +137,8 @@
                                     }
                                     // Xử lý hiển thị Trạng thái
                                     $status_display = ($user_status === 'active')
-                                        ? "<span class='badge bg-success-subtle text-success border border-success px-3'><i class='fas fa-circle me-1' style='font-size: 8px;'></i> Hoạt động</span>"
-                                        : "<span class='badge bg-danger-subtle text-danger border border-danger px-3'><i class='fas fa-ban me-1'></i> Bị khóa</span>";
+                                        ? "<span class='badge bg-success'>Hoạt động</span>"
+                                        : "<span class='badge bg-danger'> Bị khóa</span>";
 
                                     echo "
                             <tr>
