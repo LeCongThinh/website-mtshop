@@ -54,6 +54,7 @@ if ($row = mysqli_fetch_array($get_user_result)) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <link rel="shortcut icon" type="image/x-icon" href="../assets/images/logo/icon-laptopshop.png" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Thêm Google Font Inter cho hiện đại -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -185,9 +186,9 @@ if ($row = mysqli_fetch_array($get_user_result)) {
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item p-2 d-flex align-items-center text-dark"
-                                href="index.php?change_password">
-                                <i class="fas fa-key me-2 width-20 text-center"></i>
+                            <a class="dropdown-item p-2 d-flex align-items-center text-dark" href="javascript:void(0)"
+                                data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                                <i class="fas fa-key me-2 text-center" style="width: 20px;"></i>
                                 <span>Đổi mật khẩu</span>
                             </a>
                         </li>
@@ -209,6 +210,39 @@ if ($row = mysqli_fetch_array($get_user_result)) {
         <!-- Main Workspace -->
         <main class="main-content">
             <div class="container-fluid">
+                <?php if (isset($_GET['status']) || isset($_GET['error'])): ?>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            <?php
+                            $type = $_GET['status'] ?? $_GET['error'];
+
+                            $swal = match ($type) {
+                                'password_updated' => ['icon' => 'success', 'title' => 'Thành công!', 'text' => 'Đã đổi mật khẩu thành công!'],
+                                'password_not_match' => ['icon' => 'error', 'title' => 'Lỗi!', 'text' => 'Mật khẩu mới và xác nhận không khớp.'],
+                                'wrong_current_password' => ['icon' => 'error', 'title' => 'Thất bại!', 'text' => 'Mật khẩu hiện tại không chính xác.'],
+                                'db_error' => ['icon' => 'warning', 'title' => 'Lỗi!', 'text' => 'Lỗi hệ thống, vui lòng thử lại.'],
+                                default => null
+                            };
+
+                            if ($swal): ?>
+                                Swal.fire({
+                                    icon: '<?php echo $swal['icon']; ?>',
+                                    title: '<?php echo $swal['title']; ?>',
+                                    text: '<?php echo $swal['text']; ?>',
+                                    confirmButtonColor: '#0d6efd',
+                                    timer: 3000,
+                                    timerProgressBar: true
+                                }).then(() => {
+                                    // Xóa tham số trên URL để khi F5 không hiện lại thông báo
+                                    const url = new URL(window.location);
+                                    url.searchParams.delete('status');
+                                    url.searchParams.delete('error');
+                                    window.history.replaceState({}, document.title, url);
+                                });
+                            <?php endif; ?>
+                        });
+                    </script>
+                <?php endif; ?>
 
                 <!-- Area for Dynamic Content -->
                 <div class="card card-custom p-4">
@@ -289,6 +323,7 @@ if ($row = mysqli_fetch_array($get_user_result)) {
     </div>
 </div>
 <?php include('./accounts/user_profile.php'); ?>
+<?php include('./accounts/change_password.php'); ?>
 <script src="../assets/js/bootstrap.bundle.js"></script>
 </body>
 
