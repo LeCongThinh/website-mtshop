@@ -1,0 +1,145 @@
+:root {
+    --primary-color: #4e73df;
+    --secondary-color: #2e59d9;
+    --sidebar-bg: #1a2035;
+    --body-bg: #f8f9fc;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--body-bg);
+}
+
+/* Sidebar Styling */
+/* Sidebar tổng */
+.sidebar {
+    width: 250px;
+    background: #0f172a;
+    min-height: 100vh;
+    color: #cbd5e1;
+}
+
+/* Title section (Sản phẩm, Danh mục...) */
+.sidebar .text-uppercase {
+    font-size: 11px !important;
+    letter-spacing: 1px;
+    font-weight: 600;
+    margin-top: 18px;
+    margin-bottom: 6px;
+    color: #64748b !important;
+}
+
+/* Nav item */
+.sidebar .nav-item {
+    margin: 2px 0;
+}
+
+/* Link chính */
+.sidebar .nav-link {
+    color: #cbd5e1;
+    padding: 10px 18px;
+    font-size: 14px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+}
+
+/* Icon */
+.sidebar .nav-link i {
+    width: 18px;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Hover */
+.sidebar .nav-link:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+/* Active */
+.sidebar .nav-link.active {
+    background: #2563eb;
+    color: #fff;
+    font-weight: 500;
+}
+
+/* Khoảng cách toàn list */
+.sidebar .nav {
+    padding: 0 10px;
+}
+
+/* Header MT SHOP */
+.sidebar h4 {
+    font-size: 18px;
+    letter-spacing: 1px;
+}
+
+.sidebar small {
+    font-size: 11px;
+    color: #94a3b8 !important;
+}
+
+/* Header & Dashboard Area */
+.admin-header {
+    background: #fff;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    padding: 1rem 2rem;
+}
+
+.admin-profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.main-content {
+    width: 100%;
+    padding: 30px;
+}
+
+.card-custom {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+}
+
+.section-title {
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 25px;
+    border-left: 5px solid var(--primary-color);
+    padding-left: 15px;
+}
+
+/* Màu mặc định của link */
+.sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.6);
+    border-left: 3px solid transparent;
+    /* Tạo viền ẩn bên trái */
+    transition: all 0.3s ease;
+}
+
+/* Khi mục đó được Active */
+.sidebar .nav-link.active {
+    background: rgba(255, 255, 255, 0.15);
+    /* Nền sáng hơn một chút */
+    color: #fff !important;
+    font-weight: 600;
+    border-left: 4px solid #4e73df;
+    /* Vạch xanh bên trái chuẩn Admin */
+}
+
+/* Icon khi active cũng sáng lên */
+.sidebar .nav-link.active i {
+    color: #4e73df;
+}
+
+/* Tiếng Việt Font mượt hơn */
+h2,
+h5 {
+    font-weight: 600;
+}

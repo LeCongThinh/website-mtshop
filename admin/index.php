@@ -28,6 +28,10 @@ if ($row = mysqli_fetch_array($get_user_result)) {
     $admin_name = $row['name'];
     $admin_image = $row['avatar'];
     $admin_role = $row['role'];
+    $admin_phone = $row['phone'];
+    $admin_email = $row['email'];
+    $admin_join = $row['created_at'];
+
 } else {
     // Đề phòng trường hợp tài khoản vừa bị xóa khỏi DB
     session_destroy();
@@ -44,7 +48,8 @@ if ($row = mysqli_fetch_array($get_user_result)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trang chủ Admin - MTShop</title>
     <link rel="stylesheet" href="../assets/css/bootstrap.css" />
-    <link rel="stylesheet" href="../assets/css/main.css" />
+    <link rel="stylesheet" href="../assets/css/admin/main_admin.css" />
+    <!-- <link rel="stylesheet" href="../assets/css/main.css" /> -->
     <!-- Thêm Font Awesome để hiện Icon trong Sidebar -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
@@ -53,154 +58,6 @@ if ($row = mysqli_fetch_array($get_user_result)) {
     <!-- Thêm Google Font Inter cho hiện đại -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
-
-<style>
-    :root {
-        --primary-color: #4e73df;
-        --secondary-color: #2e59d9;
-        --sidebar-bg: #1a2035;
-        --body-bg: #f8f9fc;
-    }
-
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: var(--body-bg);
-    }
-
-    /* Sidebar Styling */
-    /* Sidebar tổng */
-    .sidebar {
-        width: 250px;
-        background: #0f172a;
-        min-height: 100vh;
-        color: #cbd5e1;
-    }
-
-    /* Title section (Sản phẩm, Danh mục...) */
-    .sidebar .text-uppercase {
-        font-size: 11px !important;
-        letter-spacing: 1px;
-        font-weight: 600;
-        margin-top: 18px;
-        margin-bottom: 6px;
-        color: #64748b !important;
-    }
-
-    /* Nav item */
-    .sidebar .nav-item {
-        margin: 2px 0;
-    }
-
-    /* Link chính */
-    .sidebar .nav-link {
-        color: #cbd5e1;
-        padding: 10px 18px;
-        font-size: 14px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        transition: all 0.2s ease;
-    }
-
-    /* Icon */
-    .sidebar .nav-link i {
-        width: 18px;
-        text-align: center;
-        font-size: 14px;
-    }
-
-    /* Hover */
-    .sidebar .nav-link:hover {
-        background: rgba(255, 255, 255, 0.05);
-        color: #fff;
-    }
-
-    /* Active */
-    .sidebar .nav-link.active {
-        background: #2563eb;
-        color: #fff;
-        font-weight: 500;
-    }
-
-    /* Khoảng cách toàn list */
-    .sidebar .nav {
-        padding: 0 10px;
-    }
-
-    /* Header MT SHOP */
-    .sidebar h4 {
-        font-size: 18px;
-        letter-spacing: 1px;
-    }
-
-    .sidebar small {
-        font-size: 11px;
-        color: #94a3b8 !important;
-    }
-
-    /* Header & Dashboard Area */
-    .admin-header {
-        background: #fff;
-        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-        padding: 1rem 2rem;
-    }
-
-    .admin-profile-img {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-
-    .main-content {
-        width: 100%;
-        padding: 30px;
-    }
-
-    .card-custom {
-        border: none;
-        border-radius: 12px;
-        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
-    }
-
-    .section-title {
-        font-weight: 700;
-        color: #333;
-        margin-bottom: 25px;
-        border-left: 5px solid var(--primary-color);
-        padding-left: 15px;
-    }
-
-    /* Màu mặc định của link */
-    .sidebar .nav-link {
-        color: rgba(255, 255, 255, 0.6);
-        border-left: 3px solid transparent;
-        /* Tạo viền ẩn bên trái */
-        transition: all 0.3s ease;
-    }
-
-    /* Khi mục đó được Active */
-    .sidebar .nav-link.active {
-        background: rgba(255, 255, 255, 0.15);
-        /* Nền sáng hơn một chút */
-        color: #fff !important;
-        font-weight: 600;
-        border-left: 4px solid #4e73df;
-        /* Vạch xanh bên trái chuẩn Admin */
-    }
-
-    /* Icon khi active cũng sáng lên */
-    .sidebar .nav-link.active i {
-        color: #4e73df;
-    }
-
-    /* Tiếng Việt Font mượt hơn */
-    h2,
-    h5 {
-        font-weight: 600;
-    }
-</style>
 
 <div class="d-flex">
     <!-- Sidebar -->
@@ -263,7 +120,7 @@ if ($row = mysqli_fetch_array($get_user_result)) {
                 </a>
             </li>
             <li class="nav-item">
-                 <a href="index.php?create_brand" class="nav-link <?php echo isActive('create_brand'); ?>">
+                <a href="index.php?create_brand" class="nav-link <?php echo isActive('create_brand'); ?>">
                     <i class="fas fa-copyright"></i> Thêm mới loại SP
                 </a>
             </li>
@@ -320,14 +177,30 @@ if ($row = mysqli_fetch_array($get_user_result)) {
                     <img src="./admin_images/<?php echo $admin_image; ?>" class="admin-profile-img dropdown-toggle"
                         data-bs-toggle="dropdown" style="cursor: pointer;">
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                        <li><a class="dropdown-content p-2 d-block text-decoration-none text-dark" href="#"><i
-                                    class="fas fa-user-cog me-2"></i> Hồ sơ</a></li>
+                        <li>
+                            <a class="dropdown-item p-2 d-flex align-items-center text-dark" href="#"
+                                data-bs-toggle="modal" data-bs-target="#profileModal">
+                                <i class="fas fa-user-cog me-2 text-center" style="width: 20px;"></i>
+                                <span>Hồ sơ</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item p-2 d-flex align-items-center text-dark"
+                                href="index.php?change_password">
+                                <i class="fas fa-key me-2 width-20 text-center"></i>
+                                <span>Đổi mật khẩu</span>
+                            </a>
+                        </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-content p-2 d-block text-decoration-none text-danger"
-                                href="authentication/admin_logout.php"><i class="fas fa-sign-out-alt me-2"></i> Đăng
-                                xuất</a></li>
+                        <li>
+                            <a class="dropdown-item p-2 d-flex align-items-center text-danger"
+                                href="authentication/admin_logout.php">
+                                <i class="fas fa-sign-out-alt me-2 width-20 text-center"></i>
+                                <span>Đăng xuất</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -370,7 +243,7 @@ if ($row = mysqli_fetch_array($get_user_result)) {
                     if (isset($_GET['create_brand'])) {
                         include('./brands/create_brand.php');
                     }
-                     if (isset($_GET['edit_brand'])) {
+                    if (isset($_GET['edit_brand'])) {
                         include('./brands/edit_brand.php');
                     }
                     // Quản lý đơn hàng
@@ -391,16 +264,15 @@ if ($row = mysqli_fetch_array($get_user_result)) {
                         include('./accounts/edit_account.php');
                     }
                     // Quản lý bài viết
-                    if(isset($_GET['view_post'])) {
+                    if (isset($_GET['view_post'])) {
                         include('./posts/view_post.php');
                     }
-                    if(isset($_GET['create_post'])) {
+                    if (isset($_GET['create_post'])) {
                         include('./posts/create_post.php');
                     }
-                    if(isset($_GET['edit_post'])) {
+                    if (isset($_GET['edit_post'])) {
                         include('./posts/edit_post.php');
                     }
-                    
 
                     // Mặc định nếu không chọn gì
                     if (empty($_SERVER['QUERY_STRING'])) {
@@ -416,6 +288,7 @@ if ($row = mysqli_fetch_array($get_user_result)) {
         </main>
     </div>
 </div>
+<?php include('./accounts/user_profile.php'); ?>
 <script src="../assets/js/bootstrap.bundle.js"></script>
 </body>
 
