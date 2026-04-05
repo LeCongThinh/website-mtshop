@@ -1,7 +1,7 @@
 <?php
-include('../../includes/connect.php');
-include('../../functions/common_functions.php');
-include('../../functions/user/authentication/login.php'); // Gọi file chứa hàm vào đây
+include __DIR__ . '/../../includes/connect.php';
+include __DIR__ . '/../../functions/common_functions.php';
+include __DIR__ . '/../../functions/user/authentication/login.php'; // Gọi file chứa hàm vào đây
 @session_start();
 
 // Gọi hàm thực thi logic ngay khi load trang

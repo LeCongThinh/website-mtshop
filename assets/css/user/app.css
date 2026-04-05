@@ -1,0 +1,430 @@
+/* CSS web user */
+.product-scroll {
+    display: flex;
+    overflow-x: auto;
+    gap: 15px;
+    padding-bottom: 10px;
+}
+
+.product-scroll::-webkit-scrollbar {
+    height: 6px;
+}
+
+.product-scroll::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+.product-item {
+    flex: 0 0 240px;
+}
+
+.product-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card img {
+    height: 180px;
+    object-fit: cover;
+}
+
+.product-card .card-body {
+    flex-grow: 1;
+}
+
+.dropdown-submenu .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-left: 0.1rem;
+    display: none;
+}
+
+.dropdown-submenu:hover .dropdown-menu {
+    display: block;
+}
+
+/* Hiệu ứng hover cho ảnh sản phẩm */
+.product-img-container {
+    overflow: hidden;
+}
+
+.product-img-hover {
+    transition: transform 0.4s ease;
+}
+
+.product-img-hover:hover {
+    transform: scale(1.1);
+}
+
+/* Ép tất cả ảnh trong mô tả không được vượt quá chiều rộng của Card */
+.product-description img {
+    max-width: 100% !important;
+    height: auto !important;
+    display: block;
+    margin: 15px auto;
+    border-radius: 8px;
+}
+
+/* Đảm bảo nội dung chữ cũng không bị tràn nếu là 1 chuỗi dài */
+.product-description {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+/* Khung chứa nội dung mô tả */
+.description-wrapper {
+    position: relative;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out;
+    max-height: 400px;
+}
+
+/* Lớp phủ mờ dần khi nội dung quá dài */
+.description-gradient {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+    pointer-events: none;
+}
+
+/* Khi đã mở rộng thì ẩn lớp phủ mờ */
+.description-wrapper.expanded {
+    max-height: none;
+}
+
+.description-wrapper.expanded .description-gradient {
+    display: none;
+}
+
+/* Tùy chỉnh khoảng cách cho Modal hiển thị thông tin cấu hình sản phẩm */
+#fullSpecsModal .modal-dialog {
+    max-width: 800px;
+    margin: 1.75rem auto;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Bo góc và đổ bóng cho hiện đại */
+#fullSpecsModal .modal-content {
+    border-radius: 15px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Giới hạn chiều cao và cho phép cuộn nội dung bên trong */
+#fullSpecsModal .modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: 25px;
+}
+
+/* Tùy chỉnh thanh cuộn cho đẹp (Webkit) */
+#fullSpecsModal .modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+#fullSpecsModal .modal-body::-webkit-scrollbar-thumb {
+    background-color: #dee2e6;
+    border-radius: 10px;
+}
+
+/* Hiệu ứng trượt slider ảnh trong product detail */
+#mainImage {
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Lớp phụ để kích hoạt hiệu ứng khi đổi ảnh */
+.changing {
+    opacity: 0;
+    transform: scale(0.95);
+}
+
+/* Tùy chỉnh nút mũi tên cho chuyên nghiệp */
+.nav-btn {
+    opacity: 0;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.8) !important;
+}
+
+.position-relative:hover .nav-btn {
+    opacity: 1;
+}
+
+.nav-btn:hover {
+    background: #dc3545 !important;
+    color: white !important;
+}
+
+/* Căn giữa tất cả các thẻ i nằm trong p (là chú thích trong ảnh tin tức) */
+.post-content p i {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* Đảm bảo ảnh phía trên cũng được căn giữa để đồng bộ */
+.post-content img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+/* Custom giao diện phân trang */
+.pagination {
+    gap: 8px;
+}
+
+.pagination .page-item .page-link {
+    border: none;
+    border-radius: 8px !important;
+    color: #444;
+    font-weight: 600;
+    padding: 8px 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #0d6efd;
+    color: white;
+    box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
+}
+
+/* Hiệu ứng khi di chuột vào nút */
+.pagination .page-item .page-link:hover {
+    background-color: #e9ecef;
+    color: #0d6efd;
+    transform: translateY(-2px);
+}
+
+/* Ẩn các nút rườm rà trên mobile nếu cần */
+@media (max-width: 576px) {
+    .pagination .page-item:not(.active):not(:first-child):not(:last-child) {
+        display: none;
+    }
+}
+
+/* Thanh cuộn ngang mượt mà */
+.scroll-container {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.scroll-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* Nút mặc định: Viền mảnh, màu sắc nhẹ nhàng */
+.btn-filter {
+    display: inline-block;
+    padding: 7px 15px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #555;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: none;
+}
+
+/* Nút active: tô đậm, nổi bật hẳn lên */
+.btn-filter.active {
+    color: #fff !important;
+    background-color: #0d6efd !important;
+    border-color: #0d6efd !important;
+    font-weight: 700;
+    box-shadow: 0 3px 6px rgba(13, 110, 253, 0.2);
+}
+
+.flex-nowrap {
+    flex-wrap: nowrap !important;
+}
+
+/* Custome giỏ hàng */
+.cart-btn-mini {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(255, 75, 43, 0.2);
+}
+
+.cart-btn-mini:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 75, 43, 0.4);
+    color: white;
+}
+
+.cart-icon-wrapper {
+    position: relative;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #333;
+    color: white;
+    font-size: 0.65rem;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: 700;
+    border: 2px solid #fff;
+}
+
+/* Custom nút đăng nhập */
+.auth-btn-modern {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    text-decoration: none;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #333;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 1px solid #eee;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.auth-btn-modern:hover {
+    background: #f8f9fa;
+    color: #ff416c;
+    border-color: #ff416c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.auth-icon-wrapper {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.auth-btn-modern:hover .auth-icon-wrapper {
+    transform: rotate(-10deg) scale(1.1);
+}
+
+@media (max-width: 576px) {
+    .auth-text {
+        display: none;
+    }
+
+    .auth-btn-modern {
+        padding: 8px;
+        width: 40px;
+        height: 40px;
+        justify-content: center;
+    }
+}
+
+/* Thông báo đã thêm sp vào giỏ hàng */
+.toast-notify {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 9999;
+}
+
+.toast-notify.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast-success {
+    background: #198754;
+}
+
+.toast-danger {
+    background: #dc3545;
+}
+
+/* Làm đỏ toàn bộ group bao gồm cả icon khi có lỗi */
+.custom-input-group:has(.is-invalid) {
+    border-color: #dc3545 !important;
+}
+
+.custom-input-group:has(.is-invalid) .input-group-text {
+    color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
+
+/* Xóa bỏ icon cảnh báo mặc định của Bootstrap để không đè lên icon của bạn */
+.custom-input-group .form-control.is-invalid {
+    background-image: none;
+    border-color: #dc3545;
+}
+
+/* Hiệu ứng focus đồng nhất */
+.custom-input-group:focus-within {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.error-message {
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Tùy chỉnh Alert thành công (Success) */
+.alert-success {
+    background-color: #adffda !important;
+    color: #0baf65 !important;
+    border: 1px solid #badbcc;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+/* Tùy chỉnh Alert thất bại (Danger) */
+.alert-danger {
+    background-color: #ffc0c5 !important;
+    color: #842029 !important;
+    border: 1px solid #f5c2c7;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+/* Icon đi kèm (nếu bạn muốn thêm vào hàm showAlert) */
+.alert i {
+    margin-right: 8px;
+    font-size: 1.1rem;
+}
