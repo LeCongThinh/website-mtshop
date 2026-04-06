@@ -1,7 +1,7 @@
 <div class="bg-white p-4 rounded shadow-sm mb-3">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4>Laptop bán chạy</h4>
-        <a href="index.php?page=hot-laptop" class="text-primary fst-italic text-decoration-none">
+        <a href="index.php?page=all-best-selling-laptop" class="text-primary fst-italic text-decoration-none">
             Xem tất cả →
         </a>
     </div>

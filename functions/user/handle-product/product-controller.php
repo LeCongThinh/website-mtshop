@@ -147,4 +147,157 @@ function getSubcategoryData($con, $slug)
         'current_page' => $page
     ];
 }
+
+// Hiển thị danh sách sản phẩm PC bán chạy nhất 
+function showAllBestSellingPCs($con)
+{
+    $slug = 'pc';
+    $limit = 10; // Chỉ lấy 10 sản phẩm hàng đầu
+
+    // 1. Tìm ID của danh mục 'pc' và các danh mục con của nó
+    $cat_query = "SELECT id FROM categories 
+                  WHERE slug = '$slug' 
+                  OR parent_id IN (SELECT id FROM categories WHERE slug = '$slug')";
+    $cat_result = mysqli_query($con, $cat_query);
+
+    $category_ids = [];
+    while ($row = mysqli_fetch_assoc($cat_result)) {
+        $category_ids[] = $row['id'];
+    }
+
+    // Nếu không tìm thấy danh mục, trả về mảng rỗng
+    if (empty($category_ids)) {
+        return [
+            'products' => [],
+            'web_title' => 'Tất cả PC bán chạy - MTShop.com'
+        ];
+    }
+
+    $ids_string = implode(',', $category_ids);
+
+    // 2. Truy vấn chính - Lấy đúng 10 sản phẩm bán chạy nhất
+    $product_sql = "
+        SELECT p.*, 
+               (SELECT IFNULL(SUM(od.quantity), 0) 
+                FROM order_details od 
+                JOIN orders o ON od.order_id = o.id 
+                WHERE od.product_id = p.id AND o.payment_status = 'paid'
+               ) as total_sold
+        FROM products p
+        WHERE p.status = 'active' 
+        AND p.category_id IN ($ids_string)
+        ORDER BY total_sold DESC, p.id DESC
+        LIMIT $limit
+    ";
+
+    $result = mysqli_query($con, $product_sql);
+    $products = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    return [
+        'products' => $products,
+        'web_title' => 'Tất cả PC bán chạy - MTShop.com'
+    ];
+}
+
+// Hiển thị danh sách sản phẩm Laptop bán chạy nhất
+function showAllBestSellingLaptops($con)
+{
+    $slug = 'laptop';
+    $limit = 10;
+
+    // 1. Lấy danh sách ID của danh mục 'laptop' và các danh mục con
+    $cat_query = "SELECT id FROM categories 
+                  WHERE slug = '$slug' 
+                  OR parent_id IN (SELECT id FROM categories WHERE slug = '$slug')";
+    $cat_result = mysqli_query($con, $cat_query);
+
+    $category_ids = [];
+    while ($row = mysqli_fetch_assoc($cat_result)) {
+        $category_ids[] = $row['id'];
+    }
+
+    // Nếu không tìm thấy danh mục, trả về mảng rỗng ngay lập tức
+    if (empty($category_ids)) {
+        return ['products' => []];
+    }
+
+    $ids_string = implode(',', $category_ids);
+
+    // 2. Truy vấn lấy đúng 10 sản phẩm có lượt bán cao nhất
+    $product_sql = "
+        SELECT p.*, 
+               (SELECT IFNULL(SUM(od.quantity), 0) 
+                FROM order_details od 
+                JOIN orders o ON od.order_id = o.id 
+                WHERE od.product_id = p.id AND o.payment_status = 'paid'
+               ) as total_sold
+        FROM products p
+        WHERE p.status = 'active' 
+        AND p.category_id IN ($ids_string)
+        ORDER BY total_sold DESC, p.id DESC
+        LIMIT $limit
+    ";
+
+    $result = mysqli_query($con, $product_sql);
+    $products = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    return [
+        'products' => $products,
+        'web_title' => 'Laptop Bán Chạy Nhất - MTShop.com'
+    ];
+}
+
+// Hiển thị danh sách màn hình ban chạy
+function showAllBestSellingMonitors($con)
+{
+    $slug = 'man-hinh';
+    $limit = 10; // Chỉ lấy Top 10 sản phẩm
+
+    // 1. Tìm ID của danh mục 'man-hinh' và các danh mục con của nó
+    $cat_query = "SELECT id FROM categories 
+                  WHERE slug = '$slug' 
+                  OR parent_id IN (SELECT id FROM categories WHERE slug = '$slug')";
+    $cat_result = mysqli_query($con, $cat_query);
+
+    $category_ids = [];
+    if ($cat_result) {
+        while ($row = mysqli_fetch_assoc($cat_result)) {
+            $category_ids[] = $row['id'];
+        }
+    }
+
+    // Nếu không tìm thấy danh mục nào, trả về mảng rỗng ngay
+    if (empty($category_ids)) {
+        return [
+            'products' => [],
+            'web_title' => 'Tất cả màn hình bán chạy - MTShop.com'
+        ];
+    }
+
+    $ids_string = implode(',', $category_ids);
+
+    // 2. Truy vấn chính: Lấy sản phẩm + Tính tổng số lượng bán (total_sold)
+    // Chỉ lấy những đơn hàng có trạng thái 'paid' (đã thanh toán)
+    $product_sql = "
+        SELECT p.*, 
+               (SELECT IFNULL(SUM(od.quantity), 0) 
+                FROM order_details od 
+                JOIN orders o ON od.order_id = o.id 
+                WHERE od.product_id = p.id AND o.payment_status = 'paid'
+               ) as total_sold
+        FROM products p
+        WHERE p.status = 'active' 
+        AND p.category_id IN ($ids_string)
+        ORDER BY total_sold DESC, p.id DESC
+        LIMIT $limit
+    ";
+
+    $result = mysqli_query($con, $product_sql);
+    $products = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    return [
+        'products' => $products,
+        'web_title' => 'Tất cả màn hình bán chạy - MTShop.com'
+    ];
+}
 ?>

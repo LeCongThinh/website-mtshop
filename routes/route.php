@@ -2,10 +2,9 @@
 require_once(__DIR__ . "/../includes/connect.php");
 require_once(__DIR__ . "/../functions/user/handle-product/product-controller.php");
 require_once(__DIR__ . "/../functions/user/home-controller.php");
-
+require_once(__DIR__ . "/../functions/user/search-controller.php");
 
 // Load categories cho header
-// Bỏ ORDER BY sort_order
 $result = mysqli_query($con, "SELECT * FROM categories WHERE parent_id IS NULL AND status = 'active'");
 $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
@@ -47,11 +46,15 @@ if ($page === 'home') {
         'best_selling_monitors' => $monitorData['products'] ?? []
     ];
 
-} elseif ($page === 'cart') {
+} 
+// Giỏ hàng
+elseif ($page === 'cart') {
     $web_title = 'Giỏ hàng - MTShop';
     $content_file = 'users_area/cart.php';
 
-} elseif ($page === 'product-detail') {
+} 
+// Chi tiết sản phẩm
+elseif ($page === 'product-detail') {
     $slug = $_GET['slug'] ?? '';
     $product = getProductDetail($con, $slug);
     if ($product) {
@@ -65,7 +68,9 @@ if ($page === 'home') {
         exit();
     }
 
-} elseif ($page === 'category') {
+} 
+// Load sản phẩm theo danh mục chính
+elseif ($page === 'category') {
     $slug = $_GET['slug'] ?? '';
     $brand_slug = $_GET['brand'] ?? null;
 
@@ -79,7 +84,9 @@ if ($page === 'home') {
         header("Location: index.php?page=404");
         exit();
     }
-} elseif ($page === 'subcategory') {
+} 
+// Load sản phẩm theo danh mục con
+elseif ($page === 'subcategory') {
     $slug = $_GET['slug'] ?? '';
 
     $data = getSubcategoryData($con, $slug);
@@ -91,7 +98,9 @@ if ($page === 'home') {
         header("Location: index.php?page=404");
         exit();
     }
-} elseif ($page === 'new-products') {
+} 
+// Danh sách sản phẩm mới nhất
+elseif ($page === 'new-products') {
     $web_title = 'Sản phẩm mới nhất - MTShop.com';
 
     // Cấu hình phân trang (nếu bạn muốn trang này cũng có phân trang)
@@ -100,13 +109,11 @@ if ($page === 'home') {
     $offset = ($currentPage - 1) * $limit;
 
     // 1. Đếm tổng số sản phẩm mới (Có thể thêm điều kiện thời gian nếu muốn)
-    // Ví dụ: WHERE status = 'active' AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
     $countQuery = mysqli_query($con, "SELECT COUNT(*) as total FROM products WHERE status = 'active'");
     $totalRows = mysqli_fetch_assoc($countQuery)['total'];
     $totalPages = ceil($totalRows / $limit);
 
     // 2. Truy vấn danh sách sản phẩm mới nhất
-    // Sắp xếp theo ID giảm dần hoặc created_at giảm dần
     $sql = "SELECT * FROM products 
             WHERE status = 'active' 
             ORDER BY created_at DESC, id DESC 
@@ -119,7 +126,9 @@ if ($page === 'home') {
 
     // 3. Đường dẫn file hiển thị (Bạn có thể dùng chung file với all-product.php nếu giao diện giống nhau)
     $content_file = 'users_area/products/new-product.php';
-} elseif ($page === 'all-products') {
+} 
+// Xem tất cả sản phẩm
+elseif ($page === 'all-products') {
     $web_title = 'Tất cả sản phẩm mới - MTShop.com';
 
     // Cấu hình phân trang
@@ -140,7 +149,9 @@ if ($page === 'home') {
     $products = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
 
     $content_file = 'users_area/products/all-product.php';
-} elseif ($page === 'all-news') {
+}
+// Danh sách tất cả bài viết
+elseif ($page === 'all-news') {
     $web_title = 'Tất cả bài viết - MTShop';
     $limit = 9; // số bài mỗi trang
     $currentPage = isset($_GET['p']) ? (int) $_GET['p'] : 1;
@@ -163,7 +174,9 @@ if ($page === 'home') {
     $posts = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
     $content_file = 'users_area/news/all-news.php';
 
-} elseif ($page === 'news-detail') {
+} 
+// Chi tiết bài viết
+elseif ($page === 'news-detail') {
     // Lấy slug từ URL
     $slug = isset($_GET['slug']) ? mysqli_real_escape_string($con, $_GET['slug']) : '';
 
@@ -191,6 +204,47 @@ if ($page === 'home') {
 
         $content_file = 'users_area/news/news-detail.php';
     }
+} 
+// Danh sách PC bán chạy nhất
+elseif ($page === 'all-best-selling-pc') {
+    // Gọi hàm controller
+    $data = showAllBestSellingPCs($con);
+
+    // Thiết lập các biến cần thiết cho view
+    $web_title = $data['web_title'];
+    $content_file = 'users_area/products/all-best-selling-pc.php';
+    // (Đảm bảo đường dẫn này đúng với file view bạn đã gửi ở trên)
+}
+// Danh sách Laptop bán chạy nhất
+elseif ($page === 'all-best-selling-laptop') {
+    // Gọi hàm xử lý logic từ controller
+    $data = showAllBestSellingLaptops($con);
+
+    // Thiết lập các biến cần thiết cho view
+    $web_title = $data['web_title'];
+    $content_file = 'users_area/products/all-best-selling-laptop.php';
+} 
+// Danh sách màn hình bán chạy nhất
+elseif ($page === 'all-best-selling-monitor') {
+    $data = showAllBestSellingMonitors($con);
+
+    $web_title = $data['web_title'];
+    $content_file = 'users_area/products/all-best-selling-monitor.php';
+} 
+// Tìm kiếm sản phẩm
+elseif ($page === 'search-result') {
+    $keyword = $_GET['keyword'] ?? '';
+    $current_page = (int) ($_GET['p'] ?? 1);
+
+    // Gọi hàm và lấy dữ liệu
+    $search_data = searchProducts($con, $keyword, $current_page);
+
+    $products = $search_data['products'];
+    $total_pages = $search_data['total_pages'];
+    $message = $search_data['message'];
+
+    $web_title = "Kết quả tìm kiếm: " . htmlspecialchars($keyword).' - MTShop.com';
+    $content_file = 'users_area/search-result.php';
 } else {
     $web_title = 'Trang không tồn tại - MTShop';
     $content_file = 'users_area/404.php';

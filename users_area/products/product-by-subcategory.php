@@ -48,7 +48,7 @@ $products = $data['products'];
                                         <?php echo htmlspecialchars($product['name']); ?>
                                     </h6>
 
-                                    <div class="mt-auto pt-2">
+                                    <div class="mt-auto">
                                         <?php if($product['sale_price'] > 0): ?>
                                             <div class="text-danger fw-bold fs-5"><?php echo number_format($product['sale_price'], 0, ',', '.'); ?> đ</div>
                                             <div class="d-flex align-items-center gap-2">

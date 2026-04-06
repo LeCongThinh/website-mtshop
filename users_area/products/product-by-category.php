@@ -83,15 +83,17 @@ $brandParam = isset($brand) ? '&brand=' . $brand['slug'] : '';
                                 <div class="position-relative text-center bg-white p-2">
                                     <img src="<?php echo $product['thumbnail'] ? 'admin/admin_images/' . $product['thumbnail'] : 'assets/images/avatar/undefined.png'; ?>"
                                         style="height:180px; object-fit:contain;" class="img-fluid" alt="">
+
                                     <?php if ($product['sale_price'] > 0): ?>
                                         <span class="position-absolute top-0 start-0 badge bg-danger m-2">Giảm giá</span>
                                     <?php endif; ?>
                                 </div>
 
                                 <div class="card-body p-3 text-start d-flex flex-column flex-grow-1">
-                                    <h6 class="fw-bold mb-2 text-dark line-clamp-2" style="min-height: 38px;">
+                                    <h6 class="fw-bold text-dark line-clamp-2" style="min-height: 38px;">
                                         <?php echo htmlspecialchars($product['name']); ?>
                                     </h6>
+
                                     <div class="mt-auto">
                                         <?php if ($product['sale_price'] > 0): ?>
                                             <div class="text-danger fw-bold fs-5">
@@ -101,7 +103,8 @@ $brandParam = isset($brand) ? '&brand=' . $brand['slug'] : '';
                                                 <span
                                                     class="text-muted small text-decoration-line-through"><?php echo number_format($product['price'], 0, ',', '.'); ?>
                                                     đ</span>
-                                                <span class="badge border border-danger text-danger" style="font-size: 0.7rem;">
+                                                <span class="badge border border-danger text-danger fw-bold"
+                                                    style="font-size: 0.7rem;">
                                                     -<?php echo round((($product['price'] - $product['sale_price']) / $product['price']) * 100); ?>%
                                                 </span>
                                             </div>
@@ -114,17 +117,25 @@ $brandParam = isset($brand) ? '&brand=' . $brand['slug'] : '';
                                     </div>
                                 </div>
                             </a>
-                            <div class="card-footer p-2 border-0 bg-transparent">
+
+                            <div class="card-footer p-2 border-0 bg-transparent text-center mt-auto">
                                 <button class="btn btn-outline-primary btn-sm w-100 btn-add-cart"
                                     data-id="<?php echo $product['id']; ?>">
-                                    <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+                                    <i class="bi bi-cart-plus me-1"></i> Thêm vào giỏ hàng
                                 </button>
+                                <div class="d-flex align-items-center mt-2 mb-1 justify-content-start">
+                                    <span class="text-warning me-2">
+                                        <span class="fw-semibold small">4.8</span> <i class="bi bi-star-fill"></i>
+                                    </span>
+                                    <span class="text-muted small">(120 đánh giá)</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
                 <div class="col-12 text-center py-5">
+                    <img src="assets/images/no-product.png" width="150" class="mb-3 opacity-50">
                     <p class="text-muted">Hiện chưa có sản phẩm nào trong danh mục này.</p>
                 </div>
             <?php endif; ?>

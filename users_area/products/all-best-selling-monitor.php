@@ -1,5 +1,5 @@
 <?php
-// Dữ liệu được truyền từ index.php thông qua biến $data
+// Dữ liệu được truyền từ controller thông qua biến $data
 $products = $data['products'] ?? [];
 ?>
 
@@ -11,13 +11,13 @@ $products = $data['products'] ?? [];
                     <i class="bi bi-house-door-fill me-1"></i>Trang chủ
                 </a>
             </li>
-            <li class="breadcrumb-item active">PC bán chạy nhất</li>
+            <li class="breadcrumb-item active">Màn hình bán chạy nhất</li>
         </ul>
 
         <div class="card border-0 shadow-sm rounded-4 mb-4">
             <div class="card-body p-4">
                 <div class="border-start border-4 border-primary ps-3">
-                    <h4 class="fw-bolder mb-1 text-uppercase">Danh sách PC bán chạy</h4>
+                    <h4 class="fw-bolder mb-1 text-uppercase">Danh sách màn hình bán chạy</h4>
                     <p class="text-muted mb-0 small">Khám phá những thiết bị công nghệ mới nhất tại MTShop</p>
                 </div>
             </div>
@@ -33,7 +33,7 @@ $products = $data['products'] ?? [];
 
                                 <div class="position-relative product-img-container overflow-hidden bg-white">
                                     <img class="card-img-top p-2 product-img-hover"
-                                        src="<?php echo $product['thumbnail'] ? 'admin/admin_images/' . $product['thumbnail'] : 'admin/admin_images/post_thumbnails/undefined.png'; ?>"
+                                        src="<?php echo $product['thumbnail'] ? 'admin/admin_images/' . $product['thumbnail'] : 'assets/images/avatar/undefined.png'; ?>"
                                         style="height:180px; object-fit:contain;"
                                         alt="<?php echo htmlspecialchars($product['name']); ?>">
 
@@ -75,30 +75,29 @@ $products = $data['products'] ?? [];
                             </a>
 
                             <div class="card-footer p-2 border-0 bg-transparent text-center mt-auto">
-                                <button class="btn btn-outline-primary btn-sm w-100 btn-add-cart"
-                                    data-id="<?php echo $product['id']; ?>">
-                                    <i class="bi bi-cart-plus me-1"></i> Thêm vào giỏ hàng
-                                </button>
-                                <div class="d-flex align-items-center mt-2 mb-1 justify-content-between">
-                                    <span class="text-warning">
-                                        <span class="fw-semibold small">4.8</span>
-                                        <i class="bi bi-star-fill"></i>
-                                        <span class="text-muted small">(120 đánh giá)</span>
-                                    </span>
-
-                                    <span class="text-muted small">
-                                        <i class="bi bi-fire text-danger me-1"></i>Đã bán
-                                        <?php echo number_format($product['total_sold'] ?? 0); ?>
-                                    </span>
-                                </div>
+                            <button class="btn btn-outline-primary btn-sm w-100 btn-add-cart"
+                                data-id="<?php echo $product['id']; ?>">
+                                <i class="bi bi-cart-plus me-1"></i> Thêm vào giỏ hàng
+                            </button>
+                            <div class="d-flex align-items-center mt-2 mb-1 justify-content-between">
+                                <span class="text-warning">
+                                    <span class="fw-semibold small">4.8</span>
+                                    <i class="bi bi-star-fill"></i>
+                                    <span class="text-muted small">(120 đánh giá)</span>
+                                </span>
+                                <span class="text-muted small">
+                                    <i class="bi bi-fire text-danger me-1"></i>Đã bán
+                                    <?php echo number_format($product['total_sold'] ?? 0); ?>
+                                </span>
                             </div>
+                        </div>
                         </div>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
                 <div class="col-12 text-center py-5">
                     <img src="assets/images/avatar/undefined.png" width="150" class="mb-3 opacity-50">
-                    <p class="text-muted">Hiện chưa có sản phẩm nào.</p>
+                    <p class="text-muted">Hiện chưa có sản phẩm nào trong danh mục này.</p>
                 </div>
             <?php endif; ?>
         </div>

@@ -1,5 +1,4 @@
 <?php
-// Dữ liệu được truyền từ index.php thông qua biến $data
 $products = $data['products'] ?? [];
 ?>
 
@@ -11,13 +10,13 @@ $products = $data['products'] ?? [];
                     <i class="bi bi-house-door-fill me-1"></i>Trang chủ
                 </a>
             </li>
-            <li class="breadcrumb-item active">PC bán chạy nhất</li>
+            <li class="breadcrumb-item active">Laptop bán chạy nhất</li>
         </ul>
 
         <div class="card border-0 shadow-sm rounded-4 mb-4">
             <div class="card-body p-4">
                 <div class="border-start border-4 border-primary ps-3">
-                    <h4 class="fw-bolder mb-1 text-uppercase">Danh sách PC bán chạy</h4>
+                    <h4 class="fw-bolder mb-1 text-uppercase">Danh sách laptop bán chạy</h4>
                     <p class="text-muted mb-0 small">Khám phá những thiết bị công nghệ mới nhất tại MTShop</p>
                 </div>
             </div>
@@ -33,7 +32,7 @@ $products = $data['products'] ?? [];
 
                                 <div class="position-relative product-img-container overflow-hidden bg-white">
                                     <img class="card-img-top p-2 product-img-hover"
-                                        src="<?php echo $product['thumbnail'] ? 'admin/admin_images/' . $product['thumbnail'] : 'admin/admin_images/post_thumbnails/undefined.png'; ?>"
+                                        src="<?php echo $product['thumbnail'] ? 'admin/admin_images/' . $product['thumbnail'] : 'assets/images/avatar/undefined.png'; ?>"
                                         style="height:180px; object-fit:contain;"
                                         alt="<?php echo htmlspecialchars($product['name']); ?>">
 
@@ -98,7 +97,7 @@ $products = $data['products'] ?? [];
             <?php else: ?>
                 <div class="col-12 text-center py-5">
                     <img src="assets/images/avatar/undefined.png" width="150" class="mb-3 opacity-50">
-                    <p class="text-muted">Hiện chưa có sản phẩm nào.</p>
+                    <p class="text-muted">Hiện chưa có sản phẩm nào trong danh mục này.</p>
                 </div>
             <?php endif; ?>
         </div>

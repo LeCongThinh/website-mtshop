@@ -1,7 +1,7 @@
 <div class="bg-white p-4 rounded shadow-sm mb-3">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4>PC bán chạy</h4>
-        <a href="index.php?page=hot-pc" class="text-primary fst-italic text-decoration-none">Xem tất cả →</a>
+        <a href="index.php?page=all-best-selling-pc" class="text-primary fst-italic text-decoration-none">Xem tất cả →</a>
     </div>
 
     <div class="product-scroll d-flex overflow-auto pb-2" style="gap: 15px;">
