@@ -1,3 +1,17 @@
+<?php
+$total_cart_items = 0;
+if (isset($_SESSION['user_id'])) {
+    $u_id = $_SESSION['user_id'];
+    // Thêm kiểm tra kết nối $con để tránh lỗi nếu include file bị sai thứ tự
+    $res = mysqli_query($con, "SELECT SUM(quantity) as total FROM carts WHERE user_id = $u_id");
+    if ($res) {
+        $cart_data = mysqli_fetch_assoc($res);
+        $total_cart_items = $cart_data['total'] ?? 0;
+    }
+} else {
+    $total_cart_items = isset($_SESSION['cart']) ? array_sum($_SESSION['cart']) : 0;
+}
+?>
 <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
     <div class="container px-4 px-lg-5">
         <a class="navbar-brand d-flex align-items-center gap-2" href="index.php">
@@ -23,7 +37,8 @@
                                         <?php echo htmlspecialchars($category['name']); ?>
                                         <?php if (!empty($category['children'])): ?>
                                             <i class="bi bi-chevron-right small ms-2"></i>
-                                        <?php endif; ?>
+                                            <?php
+                                        endif; ?>
                                     </a>
 
                                     <?php if (!empty($category['children'])): ?>
@@ -35,12 +50,16 @@
                                                         <?php echo htmlspecialchars($child['name']); ?>
                                                     </a>
                                                 </li>
-                                            <?php endforeach; ?>
+                                                <?php
+                                            endforeach; ?>
                                         </ul>
-                                    <?php endif; ?>
+                                        <?php
+                                    endif; ?>
                                 </li>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
+                                <?php
+                            endforeach; ?>
+                            <?php
+                        endif; ?>
                     </ul>
                 </li>
             </ul>
@@ -62,11 +81,11 @@
             </form>
 
             <div class="d-flex align-items-center gap-2">
-                <a href="cart.php" class="btn cart-btn-mini">
+                <a href="index.php?page=cart" class="btn cart-btn-mini">
                     <div class="cart-icon-wrapper">
                         <i class="bi bi-cart3"></i>
                         <span class="cart-badge" id="cart-count">
-                            <?php echo isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?>
+                            <?php echo $total_cart_items; ?>
                         </span>
                     </div>
                 </a>
@@ -85,18 +104,21 @@
                                 <hr class="dropdown-divider">
                             </li>
                             <li>
-                                <a href="logout.php" class="dropdown-item text-danger">Đăng xuất</a>
+                                <a href="functions/user/authentication/logout.php" class="dropdown-item text-danger">Đăng
+                                    xuất</a>
                             </li>
                         </ul>
                     </div>
-                <?php else: ?>
+                    <?php
+                else: ?>
                     <a href="users_area/authentication/user_login.php" class="auth-btn-modern">
                         <div class="auth-icon-wrapper">
                             <i class="bi bi-person-circle"></i>
                         </div>
                         <span class="auth-text">Đăng nhập</span>
                     </a>
-                <?php endif; ?>
+                    <?php
+                endif; ?>
             </div>
         </div>
     </div>
@@ -202,4 +224,18 @@
             }
         });
     });
+
+    function showToast(message) {
+        // Tạo một thông báo đơn giản nếu chưa có giao diện Toast
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+        position: fixed; top: 20px; right: 20px; 
+        background: #28a745; color: white; 
+        padding: 10px 20px; border-radius: 5px; 
+        z-index: 10000; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    `;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
 </script>

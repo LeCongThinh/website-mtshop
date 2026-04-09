@@ -82,7 +82,7 @@ $brandParam = isset($brand) ? '&brand=' . $brand['slug'] : '';
                                 class="text-decoration-none text-black">
                                 <div class="position-relative text-center bg-white p-2">
                                     <img src="<?php echo $product['thumbnail'] ? 'admin/admin_images/' . $product['thumbnail'] : 'assets/images/avatar/undefined.png'; ?>"
-                                        style="height:180px; object-fit:contain;" class="img-fluid" alt="">
+                                        style="height:180px; object-fit:contain;" class="img-fluid product-img-hover" alt="">
 
                                     <?php if ($product['sale_price'] > 0): ?>
                                         <span class="position-absolute top-0 start-0 badge bg-danger m-2">Giảm giá</span>

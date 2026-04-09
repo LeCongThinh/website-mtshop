@@ -1,7 +1,9 @@
 <?php
 session_start();
+define('URL', 'http://localhost/project-php/website-mtshop/');
 require_once("includes/connect.php");
 require_once("routes/route.php");
+include 'functions/user/cart/edit-cart.php';
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -53,8 +55,9 @@ require_once("routes/route.php");
             style="position: fixed; top: 50px; right: 5px; z-index: 10000; width: 100%; max-width: 480px; pointer-events: none;">
         </div>
 
-        <?php
-        if (isset($content_file)) {
+       <?php
+        // Lúc này biến $data từ route.php đã sẵn sàng để file con sử dụng
+        if (isset($content_file) && file_exists($content_file)) {
             include($content_file);
         }
         ?>
@@ -68,14 +71,38 @@ require_once("routes/route.php");
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script src="assets/js/user/handle-product-detail.js"></script>
     <script src="assets/js/user/product-to-cart.js"></script>
-    <script src="assets/js/user/handle-cart-detail.js"></script>
     <script src="assets/js/user/alert.js"></script>
+    <script src="assets/js/user/handle-product-detail.js"></script>
 
-    <?php if (isset($extra_scripts))
-        echo $extra_scripts; ?>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            // 1. Lấy các tham số từ URL
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('login')) {
+                const type = params.get('login');
+                let message = "";
+                let alertType = "success";
+                if (type === 'success') {
+                    const user = params.get('user') || 'bạn';
+                    message = `Chào mừng ${user} đã quay trở lại!`;
+                }
+                else if (type === 'has_cart') {
+                    const qty = params.get('qty') || 0;
+                    message = `Chào mừng trở lại! Bạn có ${qty} sản phẩm trong giỏ hàng.`;
+                    alertType = "info";
+                }
+                // 3. Gọi hàm showAlert từ file alert.js của bạn
+                if (message !== "") {
+                    showAlert('mainAlert', message, alertType, 4000);
+                }
+                // 4. Làm sạch URL (Xóa các tham số login để không hiện lại khi F5)
+                const newUrl = window.location.pathname + (params.get('page') ? '?page=' + params.get('page') : '');
+                window.history.replaceState({}, document.title, newUrl);
+            }
+        });
+    </script>
+
 </body>
 
 </html>

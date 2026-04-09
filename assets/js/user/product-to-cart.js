@@ -1,124 +1,89 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+    console.log('MTShop: Shopping Cart System Ready');
 
-    document.querySelectorAll('.btn-add-cart').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            const productId = this.dataset.id;
-            const button = this;
+    // Cấu hình ưu tiên lấy từ window.CART đã khai báo ở index.php
+    const CONFIG = {
+        addUrl: '/project-php/website-mtshop/functions/user/cart/cart-controller.php',
+        cartUrl: 'index.php?page=cart',
+        badgeSelector: '#cart-count'
+    };
 
-            button.disabled = true;
-            button.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Đang thêm...';
+    // --- 1. Xử lý cho tất cả các nút Thêm/Mua ---
+    const handleCartAction = async (button, isRedirect = false) => {
+        const productId = button.dataset.id;
+        const originalHTML = button.innerHTML;
 
-            // Dùng window.CART.addUrl thay cho {{ route() }}
-            fetch(window.CART.addUrl, {
+        if (!productId) return;
+
+        // Hiệu ứng Loading
+        button.disabled = true;
+        button.innerHTML = `<span class="spinner-border spinner-border-sm" role="status"></span> ${isRedirect ? 'Đang xử lý...' : ''}`;
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        try {
+            const formData = new FormData();
+            formData.append('product_id', productId);
+            formData.append('quantity', 1);
+
+            const response = await fetch(CONFIG.addUrl, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({
-                    product_id: productId,
-                    quantity: 1,
-                }),
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        const badge = document.getElementById('cart-count');
-                        if (badge) badge.textContent = data.count;
+                body: formData
+            });
 
-                        button.classList.remove('btn-outline-primary');
-                        button.classList.add('btn-success');
-                        button.innerHTML = '<i class="bi bi-check-lg me-1"></i> Đã thêm!';
+            if (!response.ok) throw new Error('Network error');
+            const data = await response.json();
 
-                        setTimeout(() => {
-                            button.disabled = false;
-                            button.classList.remove('btn-success');
-                            button.classList.add('btn-outline-primary');
-                            button.innerHTML = '<i class="bi bi-cart-plus me-1"></i> Thêm vào giỏ hàng';
-                        }, 2000);
+            if (data.success) {
+                // Cập nhật số lượng trên Header
+                const badge = document.querySelector(CONFIG.badgeSelector);
+                if (badge) {
+                    badge.textContent = data.count;
+                    badge.classList.add('bump-effect');
+                    setTimeout(() => badge.classList.remove('bump-effect'), 300);
+                }
 
-                    } else {
-                        showToast('Có lỗi xảy ra, vui lòng thử lại!', 'danger');
-                        button.disabled = false;
-                        button.innerHTML = '<i class="bi bi-cart-plus me-1"></i> Thêm vào giỏ hàng';
-                    }
-                })
-                .catch(() => {
-                    showToast('Mất kết nối, vui lòng thử lại!', 'danger');
+                if (isRedirect) {
+                    // Nếu là "Mua ngay" -> Chuyển trang
+                    window.location.href = CONFIG.cartUrl;
+                } else {
+                    button.innerHTML = '<i class="bi bi-check-lg me-1"></i> Đã thêm';
+                    button.classList.replace('btn-outline-primary', 'btn-success');
+                }
+            } else {
+                showToast(data.message || 'Không thể thêm hàng', 'warning');
+            }
+        } catch (err) {
+            console.error('Cart Error:', err);
+            showToast('Có lỗi xảy ra, vui lòng thử lại!', 'danger');
+        } finally {
+            // Khôi phục nút nếu không chuyển trang
+            if (!isRedirect) {
+                setTimeout(() => {
                     button.disabled = false;
-                    button.innerHTML = '<i class="bi bi-cart-plus me-1"></i> Thêm vào giỏ hàng';
-                });
+                    button.innerHTML = originalHTML;
+                    button.classList.replace('btn-success', 'btn-outline-primary');
+                }, 2000);
+            } else {
+                // Nếu lỗi Mua ngay thì mới mở lại nút
+                button.disabled = false;
+                button.innerHTML = originalHTML;
+            }
+        }
+    };
+
+    // Gán sự kiện cho nút "Thêm vào giỏ"
+    document.querySelectorAll('.btn-add-cart').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleCartAction(btn, false);
         });
     });
 
-    // Nút mua ngay: thêm sp vào giỏ hàng và chuyển đến trang chi tiết giỏ hàng 
-    document.querySelectorAll('.btn-buy-now').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            const productId = this.dataset.id;
-            const button = this;
-
-            button.disabled = true;
-            button.innerHTML = `
-            <span class="spinner-border spinner-border-sm me-1"></span>
-            <span class="fs-5 d-block">Đang xử lý...</span>
-        `;
-
-            fetch(window.CART.addUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({
-                    product_id: productId,
-                    quantity: 1,
-                }),
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        // Cập nhật badge rồi chuyển sang trang giỏ hàng
-                        const badge = document.getElementById('cart-count');
-                        if (badge) badge.textContent = data.count;
-
-                        window.location.href = window.CART.cartUrl;
-                    } else {
-                        showToast('Có lỗi xảy ra, vui lòng thử lại!', 'danger');
-                        button.disabled = false;
-                        button.innerHTML = `
-                    <span class="fs-5 d-block">MUA NGAY</span>
-                    <span class="d-block fw-normal opacity-75" style="font-size: 0.75rem;">
-                        (Giao nhanh từ 2 giờ hoặc nhận tại cửa hàng)
-                    </span>
-                `;
-                    }
-                })
-                .catch(() => {
-                    showToast('Mất kết nối, vui lòng thử lại!', 'danger');
-                    button.disabled = false;
-                    button.innerHTML = `
-                <span class="fs-5 d-block">MUA NGAY</span>
-                <span class="d-block fw-normal opacity-75" style="font-size: 0.75rem;">
-                    (Giao nhanh từ 2 giờ hoặc nhận tại cửa hàng)
-                </span>
-            `;
-                });
+    // Gán sự kiện cho nút "Mua ngay"
+    document.querySelectorAll('.btn-buy-now').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleCartAction(btn, true);
         });
     });
-
 });
-
-function showToast(message, type = 'success') {
-    const toast = document.createElement('div');
-    toast.className = `toast-notify toast-${type}`;
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.classList.add('show'), 10);
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 300);
-    }, 3000);
-}

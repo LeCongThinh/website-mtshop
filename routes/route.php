@@ -3,6 +3,8 @@ require_once(__DIR__ . "/../includes/connect.php");
 require_once(__DIR__ . "/../functions/user/handle-product/product-controller.php");
 require_once(__DIR__ . "/../functions/user/home-controller.php");
 require_once(__DIR__ . "/../functions/user/search-controller.php");
+require_once(__DIR__ . "/../functions/user/checkout/checkout-controller.php");
+
 
 // Load categories cho header
 $result = mysqli_query($con, "SELECT * FROM categories WHERE parent_id IS NULL AND status = 'active'");
@@ -17,42 +19,43 @@ foreach ($categories as &$category) {
 }
 unset($category);
 
+
 $page = $_GET['page'] ?? 'home';
 
-if ($page === 'home') {
-    // Danh sách sản phẩm mới nhất
+if ($page === 'home' || (!isset($_GET['page']) && isset($_GET['login']))) {
+
+    // 1. Danh sách sản phẩm mới nhất
     $product_res = mysqli_query($con, "SELECT * FROM products WHERE status = 'active' ORDER BY id DESC LIMIT 10");
     $products = mysqli_fetch_all($product_res, MYSQLI_ASSOC);
 
-    // Danh sách bài viết mới nhất
-    $result = mysqli_query($con, "SELECT * FROM posts WHERE status = 'active' ORDER BY created_at DESC LIMIT 10");
-    $posts = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    // 2. Danh sách bài viết mới nhất
+    $post_res = mysqli_query($con, "SELECT * FROM posts WHERE status = 'active' ORDER BY created_at DESC LIMIT 10");
+    $posts = mysqli_fetch_all($post_res, MYSQLI_ASSOC);
 
-    // Danh sách PC bán chạy nhất
+    // 3. Danh sách bán chạy (Sử dụng hàm từ home-controller.php)
     $pcData = getBestSellingProducts($con, 'pc', 10);
-    // Danh sách Laptop bán chạy nhất
     $laptopData = getBestSellingProducts($con, 'laptop', 10);
-    // Danh sách Màn hình bán chạy
     $monitorData = getBestSellingProducts($con, 'man-hinh', 10);
 
+    // 4. Thiết lập tiêu đề và file nội dung
     $web_title = 'MTShop - Chuyên cung cấp các dòng máy tính, laptop';
     $content_file = 'users_area/home-page.php';
 
+    // 5. Đóng gói dữ liệu vào mảng $data
     $data = [
-        'new_products' => $products,
-        'posts' => $posts,
+        'new_products' => $products ?? [],
+        'posts' => $posts ?? [],
         'best_selling_pcs' => $pcData['products'] ?? [],
         'best_selling_laptops' => $laptopData['products'] ?? [],
         'best_selling_monitors' => $monitorData['products'] ?? []
     ];
-
-} 
+}
 // Giỏ hàng
 elseif ($page === 'cart') {
     $web_title = 'Giỏ hàng - MTShop';
     $content_file = 'users_area/cart.php';
 
-} 
+}
 // Chi tiết sản phẩm
 elseif ($page === 'product-detail') {
     $slug = $_GET['slug'] ?? '';
@@ -68,7 +71,7 @@ elseif ($page === 'product-detail') {
         exit();
     }
 
-} 
+}
 // Load sản phẩm theo danh mục chính
 elseif ($page === 'category') {
     $slug = $_GET['slug'] ?? '';
@@ -84,7 +87,7 @@ elseif ($page === 'category') {
         header("Location: index.php?page=404");
         exit();
     }
-} 
+}
 // Load sản phẩm theo danh mục con
 elseif ($page === 'subcategory') {
     $slug = $_GET['slug'] ?? '';
@@ -98,7 +101,7 @@ elseif ($page === 'subcategory') {
         header("Location: index.php?page=404");
         exit();
     }
-} 
+}
 // Danh sách sản phẩm mới nhất
 elseif ($page === 'new-products') {
     $web_title = 'Sản phẩm mới nhất - MTShop.com';
@@ -126,7 +129,7 @@ elseif ($page === 'new-products') {
 
     // 3. Đường dẫn file hiển thị (Bạn có thể dùng chung file với all-product.php nếu giao diện giống nhau)
     $content_file = 'users_area/products/new-product.php';
-} 
+}
 // Xem tất cả sản phẩm
 elseif ($page === 'all-products') {
     $web_title = 'Tất cả sản phẩm mới - MTShop.com';
@@ -174,7 +177,7 @@ elseif ($page === 'all-news') {
     $posts = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
     $content_file = 'users_area/news/all-news.php';
 
-} 
+}
 // Chi tiết bài viết
 elseif ($page === 'news-detail') {
     // Lấy slug từ URL
@@ -204,7 +207,7 @@ elseif ($page === 'news-detail') {
 
         $content_file = 'users_area/news/news-detail.php';
     }
-} 
+}
 // Danh sách PC bán chạy nhất
 elseif ($page === 'all-best-selling-pc') {
     // Gọi hàm controller
@@ -223,14 +226,14 @@ elseif ($page === 'all-best-selling-laptop') {
     // Thiết lập các biến cần thiết cho view
     $web_title = $data['web_title'];
     $content_file = 'users_area/products/all-best-selling-laptop.php';
-} 
+}
 // Danh sách màn hình bán chạy nhất
 elseif ($page === 'all-best-selling-monitor') {
     $data = showAllBestSellingMonitors($con);
 
     $web_title = $data['web_title'];
     $content_file = 'users_area/products/all-best-selling-monitor.php';
-} 
+}
 // Tìm kiếm sản phẩm
 elseif ($page === 'search-result') {
     $keyword = $_GET['keyword'] ?? '';
@@ -243,8 +246,58 @@ elseif ($page === 'search-result') {
     $total_pages = $search_data['total_pages'];
     $message = $search_data['message'];
 
-    $web_title = "Kết quả tìm kiếm: " . htmlspecialchars($keyword).' - MTShop.com';
+    $web_title = "Kết quả tìm kiếm: " . htmlspecialchars($keyword) . ' - MTShop.com';
     $content_file = 'users_area/search-result.php';
+}
+// View chi tiết đơn hàng
+elseif ($page === 'checkout') {
+    // 2. Gọi Controller để lấy dữ liệu
+    $checkoutData = getCheckoutData($con, $_SESSION['user_id']);
+
+    // 4. Giải nén dữ liệu để file view (content_file) sử dụng
+    $user = $checkoutData['user'];
+    $cartItems = $checkoutData['cartItems'];
+    $totalOrder = $checkoutData['totalOrder'];
+
+    $web_title = 'Thanh toán đơn hàng - MTShop.com';
+    $content_file = 'users_area/checkout/view-checkout.php';
+}
+// Xử lý đơn hàng thanh toán bằng tiền mặt
+elseif ($page === 'process-checkout') {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $user_id = $_SESSION['user_id'];
+
+        // Gọi hàm xử lý
+        $result = handleCheckoutCOD($con, $user_id, $_POST);
+
+        if ($result['status'] === 'success') {
+            header("Location: index.php?page=checkout-success&code=" . $result['order_code']);
+            exit();
+        } else {
+            $_SESSION['error'] = $result['message'];
+            header("Location: index.php?page=checkout");
+            exit();
+        }
+    }
+} 
+// Thanh toán đơn hàng thành công
+elseif ($page === 'checkout-success') {
+    // Lấy mã đơn hàng từ URL (?code=ORD-...)
+    $order_code = $_GET['code'] ?? '';
+    $user_id = $_SESSION['user_id'] ?? 0;
+
+    // Gọi hàm từ controller
+    $order = getOrderSuccessDetails($con, $order_code, $user_id);
+
+    // Nếu mã code sai hoặc không thuộc về user này
+    if (!$order) {
+        header("Location: index.php?page=404");
+        exit();
+    }
+
+    // Thiết lập cho layout
+    $web_title = 'Thanh toán đơn hàng thành công #' . $order_code . ' - MTShop';
+    $content_file = 'users_area/checkout/checkout-success.php';
 } else {
     $web_title = 'Trang không tồn tại - MTShop';
     $content_file = 'users_area/404.php';
