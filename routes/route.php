@@ -267,19 +267,68 @@ elseif ($page === 'process-checkout') {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user_id = $_SESSION['user_id'];
 
-        // Gọi hàm xử lý
-        $result = handleCheckoutCOD($con, $user_id, $_POST);
+        // Lấy dữ liệu giỏ hàng để tính toán lại giá tại Server
+        $checkoutData = getCheckoutData($con, $user_id);
+        $cartItems = $checkoutData['cartItems'];
+        $totalAmount = $checkoutData['totalOrder'];
+
+        if (empty($cartItems)) {
+            $_SESSION['error'] = "Giỏ hàng trống!";
+            header("Location: index.php?page=checkout");
+            exit();
+        }
+
+        // Gọi hàm lưu đơn hàng đã nâng cấp ở trên
+        $result = createOrderRecord($con, $user_id, $_POST, $cartItems, $totalAmount);
 
         if ($result['status'] === 'success') {
-            header("Location: index.php?page=checkout-success&code=" . $result['order_code']);
-            exit();
+            // Kiểm tra khách chọn phương thức nào
+            if ($result['payment_method'] === 'vnpay') {
+                // Nếu là VNPAY: Tạo URL và chuyển hướng sang cổng thanh toán
+                $vnpayUrl = generateVNPAYUrl($result['order_code'], $result['total_amount']);
+                header("Location: " . $vnpayUrl);
+                exit();
+            } else {
+                // Nếu là COD: Chuyển hướng về trang thông báo thành công
+                header("Location: index.php?page=checkout-success&code=" . $result['order_code']);
+                exit();
+            }
         } else {
             $_SESSION['error'] = $result['message'];
             header("Location: index.php?page=checkout");
             exit();
         }
     }
-} 
+}
+// Xử lý kết quả trả về từ VNPAY
+elseif ($page === 'vnpay_return') {
+    $vnp_ResponseCode = $_GET['vnp_ResponseCode'] ?? '';
+    $vnp_TransactionNo = $_GET['vnp_TransactionNo'] ?? '';
+    $orderCode = $_GET['vnp_TxnRef'] ?? '';
+
+    if ($vnp_ResponseCode === '00') {
+        // Thanh toán thành công: Cập nhật DB
+        $sql = "UPDATE orders SET 
+                payment_status = 'paid',
+                transaction_id = '$vnp_TransactionNo', 
+                status = 'confirmed',
+                updated_at = NOW() 
+                WHERE order_code = '$orderCode'";
+
+        if (mysqli_query($con, $sql)) {
+            // Chuyển hướng sang trang thành công
+            header("Location: index.php?page=checkout-success&code=" . $orderCode);
+            exit();
+        } else {
+            echo "Lỗi cập nhật database: " . mysqli_error($con);
+        }
+    } else {
+        // Thanh toán thất bại hoặc khách hủy
+        $_SESSION['error'] = "Thanh toán không thành công. Mã lỗi: " . $vnp_ResponseCode;
+        header("Location: index.php?page=checkout");
+    }
+    exit();
+}
 // Thanh toán đơn hàng thành công
 elseif ($page === 'checkout-success') {
     // Lấy mã đơn hàng từ URL (?code=ORD-...)
