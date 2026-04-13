@@ -127,13 +127,8 @@ if ($row = mysqli_fetch_array($get_user_result)) {
             </li>
             <div class="px-4 py-2 small text-uppercase text-muted" style="font-size: 0.7rem;">Quản lý đơn hàng</div>
             <li class="nav-item">
-                <a href="index.php?list_orders" class="nav-link <?php echo isActive('list_orders'); ?>">
-                    <i class="fas fa-shopping-cart"></i> Danh sách đơn hàng
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="index.php?list_payments" class="nav-link <?php echo isActive('list_payments'); ?>">
-                    <i class="fas fa-credit-card"></i> Thêm mới đơn hàng
+                <a href="index.php?view_order" class="nav-link <?php echo isActive('view_order'); ?>">
+                    <i class="fas fa-shopping-cart"></i> Xử lý đơn hàng
                 </a>
             </li>
 
@@ -270,7 +265,7 @@ if ($row = mysqli_fetch_array($get_user_result)) {
                     if (isset($_GET['edit_category'])) {
                         include('./categories/edit_category.php');
                     }
-                    // Quan lý loại sản phẩm
+                    // Quản lý loại sản phẩm
                     if (isset($_GET['view_brand'])) {
                         include('./brands/view_brand.php');
                     }
@@ -281,11 +276,11 @@ if ($row = mysqli_fetch_array($get_user_result)) {
                         include('./brands/edit_brand.php');
                     }
                     // Quản lý đơn hàng
-                    if (isset($_GET['list_orders'])) {
-                        include('./list_orders.php');
+                    if (isset($_GET['view_order'])) {
+                        include('./orders/view_order.php');
                     }
-                    if (isset($_GET['list_payments'])) {
-                        include('./list_payments.php');
+                    if (isset($_GET['edit_order'])) {
+                        include('./orders/edit_order.php');
                     }
                     // Quản lý tài khoản
                     if (isset($_GET['list_accounts'])) {
@@ -325,6 +320,8 @@ if ($row = mysqli_fetch_array($get_user_result)) {
 <?php include('./accounts/user_profile.php'); ?>
 <?php include('./accounts/change_password.php'); ?>
 <script src="../assets/js/bootstrap.bundle.js"></script>
+<script src="../assets/js/admin/show_modal_order.js"></script>
+
 </body>
 
 </html>
