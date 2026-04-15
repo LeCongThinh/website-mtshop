@@ -302,7 +302,8 @@ if ($row = mysqli_fetch_array($get_user_result)) {
                     if (isset($_GET['edit_post'])) {
                         include('./posts/edit_post.php');
                     }
-                    // Thống kê đơn hàng
+
+                    // Mặc định nếu không chọn gì
                     if (empty($_GET) || (isset($_GET['action']) && $_GET['action'] == 'get_revenue_data')) {
                         include('./dashboard/order_statistics.php');
                     }

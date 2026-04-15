@@ -5,6 +5,32 @@ require_once(__DIR__ . "/../functions/user/home-controller.php");
 require_once(__DIR__ . "/../functions/user/search-controller.php");
 require_once(__DIR__ . "/../functions/user/checkout/checkout-controller.php");
 
+// --- HÀM HỖ TRỢ HIỂN THỊ TRẠNG THÁI (Dùng chung cho User Area) ---
+
+// Hàm hiển thị Trạng thái Đơn hàng (Việt hóa đồng bộ Admin)
+function getOrderStatusBadge($status)
+{
+    return match ($status) {
+        'pending'   => ['class' => 'bg-warning text-dark', 'text' => 'Chờ duyệt đơn'],
+        'confirmed' => ['class' => 'bg-primary', 'text' => 'Đã xác nhận đơn hàng'],
+        'shipping'  => ['class' => 'bg-info', 'text' => 'Đang giao hàng'],
+        'delivered' => ['class' => 'bg-success', 'text' => 'Giao thành công'],
+        'cancelled' => ['class' => 'bg-danger', 'text' => 'Đã hủy đơn'],
+        default     => ['class' => 'bg-secondary', 'text' => 'Không rõ']
+    };
+}
+
+// Hàm hiển thị Trạng thái Thanh toán (Việt hóa đồng bộ Admin)
+function getPaymentStatusBadge($status)
+{
+    return match ($status) {
+        'pending'  => ['class' => 'bg-secondary', 'text' => 'Chưa thanh toán'],
+        'paid'     => ['class' => 'bg-success', 'text' => 'Đã thanh toán'],
+        'failed'   => ['class' => 'bg-danger', 'text' => 'Thanh toán thất bại'],
+        'refunded' => ['class' => 'bg-warning text-dark', 'text' => 'Đã hoàn tiền'],
+        default    => ['class' => 'bg-secondary', 'text' => 'Chưa rõ']
+    };
+}
 
 // Load categories cho header
 $result = mysqli_query($con, "SELECT * FROM categories WHERE parent_id IS NULL AND status = 'active'");
@@ -54,7 +80,6 @@ if ($page === 'home' || (!isset($_GET['page']) && isset($_GET['login']))) {
 elseif ($page === 'cart') {
     $web_title = 'Giỏ hàng - MTShop';
     $content_file = 'users_area/cart.php';
-
 }
 // Chi tiết sản phẩm
 elseif ($page === 'product-detail') {
@@ -70,7 +95,6 @@ elseif ($page === 'product-detail') {
         header("Location: index.php?page=home");
         exit();
     }
-
 }
 // Load sản phẩm theo danh mục chính
 elseif ($page === 'category') {
@@ -176,7 +200,6 @@ elseif ($page === 'all-news') {
     mysqli_stmt_execute($stmt);
     $posts = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
     $content_file = 'users_area/news/all-news.php';
-
 }
 // Chi tiết bài viết
 elseif ($page === 'news-detail') {
@@ -263,11 +286,47 @@ elseif ($page === 'checkout') {
     $content_file = 'users_area/checkout/view-checkout.php';
 }
 // Xử lý đơn hàng thanh toán bằng tiền mặt
+// elseif ($page === 'process-checkout') {
+//     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//         $user_id = $_SESSION['user_id'];
+
+//         // Lấy dữ liệu giỏ hàng để tính toán lại giá tại Server
+//         $checkoutData = getCheckoutData($con, $user_id);
+//         $cartItems = $checkoutData['cartItems'];
+//         $totalAmount = $checkoutData['totalOrder'];
+
+//         if (empty($cartItems)) {
+//             $_SESSION['error'] = "Giỏ hàng trống!";
+//             header("Location: index.php?page=checkout");
+//             exit();
+//         }
+
+//         // Gọi hàm lưu đơn hàng đã nâng cấp ở trên
+//         $result = createOrderRecord($con, $user_id, $_POST, $cartItems, $totalAmount);
+
+//         if ($result['status'] === 'success') {
+//             // Kiểm tra khách chọn phương thức nào
+//             if ($result['payment_method'] === 'vnpay') {
+//                 // Nếu là VNPAY: Tạo URL và chuyển hướng sang cổng thanh toán
+//                 $vnpayUrl = generateVNPAYUrl($result['order_code'], $result['total_amount']);
+//                 header("Location: " . $vnpayUrl);
+//                 exit();
+//             } else {
+//                 // Nếu là COD: Chuyển hướng về trang thông báo thành công
+//                 header("Location: index.php?page=checkout-success&code=" . $result['order_code']);
+//                 exit();
+//             }
+//         } else {
+//             $_SESSION['error'] = $result['message'];
+//             header("Location: index.php?page=checkout");
+//             exit();
+//         }
+//     }
+// }
+// Xử lý đơn hàng
 elseif ($page === 'process-checkout') {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user_id = $_SESSION['user_id'];
-
-        // Lấy dữ liệu giỏ hàng để tính toán lại giá tại Server
         $checkoutData = getCheckoutData($con, $user_id);
         $cartItems = $checkoutData['cartItems'];
         $totalAmount = $checkoutData['totalOrder'];
@@ -278,18 +337,23 @@ elseif ($page === 'process-checkout') {
             exit();
         }
 
-        // Gọi hàm lưu đơn hàng đã nâng cấp ở trên
+        // Gọi hàm lưu đơn hàng (Hàm này bạn đã có trong checkout-controller.php)
         $result = createOrderRecord($con, $user_id, $_POST, $cartItems, $totalAmount);
 
         if ($result['status'] === 'success') {
-            // Kiểm tra khách chọn phương thức nào
-            if ($result['payment_method'] === 'vnpay') {
-                // Nếu là VNPAY: Tạo URL và chuyển hướng sang cổng thanh toán
+            $method = $result['payment_method'];
+
+            if ($method === 'qr') {
+                // TÍCH HỢP MỚI: Chuyển hướng sang trang hiển thị mã QR SePay
+                // Chúng ta truyền order_code sang để trang QR truy vấn dữ liệu
+                header("Location: index.php?page=qr-payment&code=" . $result['order_code']);
+                exit();
+            } elseif ($method === 'vnpay') {
                 $vnpayUrl = generateVNPAYUrl($result['order_code'], $result['total_amount']);
                 header("Location: " . $vnpayUrl);
                 exit();
             } else {
-                // Nếu là COD: Chuyển hướng về trang thông báo thành công
+                // Mặc định là COD
                 header("Location: index.php?page=checkout-success&code=" . $result['order_code']);
                 exit();
             }
@@ -317,6 +381,8 @@ elseif ($page === 'vnpay_return') {
 
         if (mysqli_query($con, $sql)) {
             // Chuyển hướng sang trang thành công
+            // header("Location: index.php?page=checkout-success&code=" . $orderCode);
+            // header("Location: " . URL . "index.php?page=checkout-success&code=" . $orderCode);
             header("Location: index.php?page=checkout-success&code=" . $orderCode);
             exit();
         } else {
@@ -325,7 +391,9 @@ elseif ($page === 'vnpay_return') {
     } else {
         // Thanh toán thất bại hoặc khách hủy
         $_SESSION['error'] = "Thanh toán không thành công. Mã lỗi: " . $vnp_ResponseCode;
-        header("Location: index.php?page=checkout");
+        // header("Location: index.php?page=checkout");
+        header("Location: " . URL . "index.php?page=checkout");
+        exit();
     }
     exit();
 }
@@ -347,8 +415,238 @@ elseif ($page === 'checkout-success') {
     // Thiết lập cho layout
     $web_title = 'Thanh toán đơn hàng thành công #' . $order_code . ' - MTShop';
     $content_file = 'users_area/checkout/checkout-success.php';
-} else {
+}
+// Danh sách đơn hàng của tôi
+elseif ($page === 'my-orders') {
+    if (!isset($_SESSION['user_id'])) {
+        header("Location: " . URL . "index.php?page=home");
+        exit();
+    }
+
+    $user_id = $_SESSION['user_id'];
+
+    // Truy vấn danh sách đơn hàng của người dùng này
+    $sql = "SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_execute($stmt);
+    $orders = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
+
+    $web_title = 'Đơn hàng của tôi - MTShop';
+    $content_file = 'users_area/checkout/my-orders.php';
+}
+// Xem chi tiết đơn hàng
+elseif ($page === 'order-detail') {
+    if (!isset($_SESSION['user_id'])) {
+        header("Location: index.php");
+        exit();
+    }
+
+    $order_code = $_GET['code'] ?? '';
+    $user_id = $_SESSION['user_id'];
+
+    // 1. Lấy thông tin chung của đơn hàng từ bảng orders
+    $sql_order = "SELECT * FROM orders WHERE order_code = ? AND user_id = ?";
+    $stmt = mysqli_prepare($con, $sql_order);
+    mysqli_stmt_bind_param($stmt, "si", $order_code, $user_id);
+    mysqli_stmt_execute($stmt);
+    $order = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+
+    if (!$order) {
+        header("Location: index.php?page=404");
+        exit();
+    }
+
+    // 2. Lấy danh sách sản phẩm (Dựa trên cấu trúc bảng bạn vừa gửi)
+    // Tôi giả định tên bảng này là 'order_items'. Nếu tên bảng khác, hãy đổi lại ở dòng dưới:
+    $sql_items = "SELECT * FROM order_details WHERE order_id = ?";
+
+    $stmt_items = mysqli_prepare($con, $sql_items);
+    if ($stmt_items === false) {
+        die("Lỗi SQL: " . mysqli_error($con));
+    }
+
+    mysqli_stmt_bind_param($stmt_items, "i", $order['id']);
+    mysqli_stmt_execute($stmt_items);
+    $order_items = mysqli_fetch_all(mysqli_stmt_get_result($stmt_items), MYSQLI_ASSOC);
+
+    $web_title = 'Chi tiết đơn hàng #' . $order_code;
+    $content_file = 'users_area/checkout/order-detail.php';
+}
+// 1. TRANG HIỂN THỊ HỒ SƠ (Dùng GET)
+elseif ($page === 'profile') {
+    if (!isset($_SESSION['user_id'])) {
+        header("Location: index.php?page=home");
+        exit();
+    }
+
+    $user_id = $_SESSION['user_id'];
+    $sql = "SELECT * FROM users WHERE id = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_execute($stmt);
+    $user = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+
+    $web_title = 'Hồ sơ của tôi - MTShop';
+    // ĐÂY MỚI LÀ CHỖ CẦN CONTENT FILE
+    $content_file = 'users_area/authentication/profile.php';
+}
+// Xử lý cập nhật hồ sơ
+elseif ($page === 'update-profile') {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['user_id'])) {
+        $user_id = $_SESSION['user_id'];
+        $name = mysqli_real_escape_string($con, $_POST['name']);
+        $phone = mysqli_real_escape_string($con, $_POST['phone']);
+        $address = mysqli_real_escape_string($con, $_POST['address']);
+
+        // Xử lý upload ảnh
+        $avatar_name = $_FILES['avatar']['name'];
+        $avatar_tmp = $_FILES['avatar']['tmp_name'];
+
+        if (!empty($avatar_name)) {
+            // 1. Tạo tên file duy nhất
+            $file_name = time() . "_" . $avatar_name;
+
+            // 2. Đường dẫn vật lý để PHP di chuyển file vào thư mục
+            $upload_path = "admin/admin_images/avatars/" . $file_name;
+
+            // 3. Chuỗi sẽ lưu vào database (có chữ avatars/ phía trước như bạn muốn)
+            $db_save_path = "avatars/" . $file_name;
+
+            if (move_uploaded_file($avatar_tmp, $upload_path)) {
+                // Cập nhật Database với giá trị $db_save_path
+                $sql = "UPDATE users SET name=?, phone=?, address=?, avatar=? WHERE id=?";
+                $stmt = mysqli_prepare($con, $sql);
+                mysqli_stmt_bind_param($stmt, "ssssi", $name, $phone, $address, $db_save_path, $user_id);
+            }
+        } else {
+            // Cập nhật không thay đổi ảnh
+            $sql = "UPDATE users SET name=?, phone=?, address=? WHERE id=?";
+            $stmt = mysqli_prepare($con, $sql);
+            mysqli_stmt_bind_param($stmt, "sssi", $name, $phone, $address, $user_id);
+        }
+
+        if (mysqli_stmt_execute($stmt)) {
+            $_SESSION['user_name'] = $name;
+            echo "<script>alert('Cập nhật thành công!'); window.location.href='index.php?page=profile';</script>";
+        }
+    }
+    exit();
+}
+// API xử lý Webhook từ SePay
+// API xử lý Webhook từ SePay
+elseif ($page === 'sepay-webhook') {
+    http_response_code(200);
+    header('Content-Type: application/json');
+
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+
+    if ($data && isset($data['content'])) {
+        $content = $data['content']; // Chuỗi dài chứa THANHTOANORD20260414E85841
+
+        // 1. Dùng Regex lấy chính xác chuỗi bắt đầu từ ORD đến hết mã (chỉ lấy chữ và số)
+        if (preg_match('/ORD([A-Z0-9]+)/', $content, $matches)) {
+            $code_clean = "ORD" . $matches[1]; // Kết quả: ORD20260414E85841
+
+            // 2. SQL thông minh: 
+            // Xóa dấu '-' trong cột order_code trước khi so sánh
+            $sql = "UPDATE orders SET 
+                    payment_status = 'paid', 
+                    payment_method = 'qr_code', 
+                    status = 'confirmed',
+                    updated_at = NOW() 
+                    WHERE REPLACE(order_code, '-', '') = ? 
+                    AND payment_status = 'pending'";
+            
+            $stmt = mysqli_prepare($con, $sql);
+            mysqli_stmt_bind_param($stmt, "s", $code_clean);
+            mysqli_stmt_execute($stmt);
+
+            if (mysqli_stmt_affected_rows($stmt) > 0) {
+                echo json_encode(['success' => true, 'msg' => 'Khớp hoàn toàn sau khi xóa gạch ngang']);
+            } else {
+                // Phương án dự phòng: Nếu vẫn không khớp, tìm kiếm tương đối (LIKE)
+                $sql_like = "UPDATE orders SET payment_status = 'paid', status = 'confirmed' 
+                             WHERE REPLACE(order_code, '-', '') LIKE ? 
+                             AND payment_status = 'pending' LIMIT 1";
+                $stmt_like = mysqli_prepare($con, $sql_like);
+                $search = "%" . $matches[1] . "%";
+                mysqli_stmt_bind_param($stmt_like, "s", $search);
+                mysqli_stmt_execute($stmt_like);
+                
+                echo json_encode(['success' => true, 'msg' => 'Khớp tương đối']);
+            }
+        }
+    }
+    exit();
+}
+// API kiểm tra trạng thái đơn hàng (Dùng cho AJAX)
+elseif ($page === 'check-order-status') {
+    header('Content-Type: application/json');
+    $order_code = $_GET['code'] ?? '';
+    
+    $sql = "SELECT payment_status FROM orders WHERE order_code = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $order_code);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $order = mysqli_fetch_assoc($result);
+
+    // Trả về true nếu status đã chuyển sang 'paid'
+    echo json_encode([
+        'paid' => ($order && strtolower($order['payment_status']) === 'paid'),
+        'debug_status' => $order['payment_status'] ?? 'unknown'
+    ]);
+    exit();
+}
+// Trang hiển thị mã QR thanh toán SePay
+elseif ($page === 'qr-payment') {
+    $order_code = $_GET['code'] ?? '';
+    $user_id = $_SESSION['user_id'] ?? 0;
+
+    // Tận dụng hàm cũ để lấy thông tin đơn hàng
+    $order = getOrderSuccessDetails($con, $order_code, $user_id);
+
+    if (!$order) {
+        header("Location: index.php?page=404");
+        exit();
+    }
+
+    $web_title = 'Thanh toán đơn hàng qua QR #' . $order_code;
+    $content_file = 'users_area/checkout/qr-payment.php'; // Đường dẫn file giao diện sẽ tạo ở Bước 3
+}
+//xóa đơn quay lại giỏ hàng
+elseif ($page === 'cancel-qr-order') {
+    $order_code = $_GET['code'] ?? '';
+
+    if (!empty($order_code)) {
+        // 1. Lấy thông tin đơn hàng và chi tiết đơn để hoàn kho
+        $orderQuery = mysqli_query($con, "SELECT id FROM orders WHERE order_code = '$order_code' AND payment_status = 'pending'");
+        $order = mysqli_fetch_assoc($orderQuery);
+
+        if ($order) {
+            $order_id = $order['id'];
+            
+            // 2. Hoàn trả số lượng vào kho sản phẩm
+            $detailsQuery = mysqli_query($con, "SELECT product_id, quantity FROM order_details WHERE order_id = $order_id");
+            while ($item = mysqli_fetch_assoc($detailsQuery)) {
+                $p_id = $item['product_id'];
+                $qty = $item['quantity'];
+                mysqli_query($con, "UPDATE products SET stock = stock + $qty WHERE id = $p_id");
+            }
+
+            // 3. Xóa đơn hàng và chi tiết đơn hàng
+            mysqli_query($con, "DELETE FROM order_details WHERE order_id = $order_id");
+            mysqli_query($con, "DELETE FROM orders WHERE id = $order_id");
+        }
+    }
+
+    // Sau khi hoàn kho và xóa đơn "tạm", quay lại trang thanh toán
+    header("Location: index.php?page=checkout");
+    exit();
+}
+else {
     $web_title = 'Trang không tồn tại - MTShop';
     $content_file = 'users_area/404.php';
 }
-?>

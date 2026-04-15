@@ -1,3 +1,26 @@
+<?php
+// 1. CHÈN LOGIC XÓA GIỎ HÀNG LÊN ĐẦU FILE
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Kết nối DB (nếu file này chưa có biến $con thì hãy include vào)
+// require_once 'includes/connect.php'; 
+
+if (isset($_SESSION['user_id'])) {
+    $user_id = (int)$_SESSION['user_id'];
+    
+    // Xóa giỏ hàng trong Database
+    $sql_clear_cart = "DELETE FROM `carts` WHERE user_id = $user_id";
+    mysqli_query($con, $sql_clear_cart);
+    
+    // Xóa thêm trong Session (nếu có dùng)
+    if (isset($_SESSION['cart'])) {
+        unset($_SESSION['cart']);
+    }
+}
+?>
+
 <section class="py-4" style="background-color: #e9ecef; min-height: 80vh; display: flex; align-items: center;">
     <div class="container">
         <div class="row justify-content-center">
@@ -46,17 +69,18 @@
 
                         <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
                             <a href="index.php" class="btn btn-outline-primary px-4 py-2 fw-bold"
-                               style="border-radius: 10px;">
+                                style="border-radius: 10px;">
                                 <i class="bi bi-house-door me-2"></i>Tiếp tục mua sắm
                             </a>
-                            <a href="index.php?page=my-orders" class="btn btn-primary px-4 py-2 fw-bold shadow-sm"
-                               style="border-radius: 10px; background: linear-gradient(45deg, #0d6efd, #004dc7); border: none;">
+                            <a href="<?= URL ?>index.php?page=my-orders"
+                                class="btn btn-primary px-4 py-2 fw-bold shadow-sm"
+                                style="border-radius: 10px; background: linear-gradient(45deg, #0d6efd, #004dc7); border: none;">
                                 <i class="bi bi-file-earmark-text me-2"></i>Xem đơn hàng của tôi
                             </a>
                         </div>
                     </div>
                 </div>
-                
+
                 <p class="text-center text-muted mt-4 small">
                     Bạn cần hỗ trợ? Liên hệ Hotline: <span class="text-primary fw-bold">1900 xxxx</span>
                 </p>
