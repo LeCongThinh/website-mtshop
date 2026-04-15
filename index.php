@@ -1,6 +1,19 @@
 <?php
 session_start();
-define('URL', 'http://localhost/project-php/website-mtshop/');
+
+// Giải pháp tối ưu cho ngrok: Kiểm tra thêm header X-Forwarded-Proto
+$protocol = 'http://';
+if ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || 
+    $_SERVER['SERVER_PORT'] == 443 || 
+    (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) {
+    $protocol = 'https://';
+}
+
+$domainName = $_SERVER['HTTP_HOST'];
+define('URL', $protocol . $domainName . '/website-mtshop/');
+
+header('Access-Control-Allow-Origin: *');
+
 require_once("includes/connect.php");
 require_once("routes/route.php");
 include 'functions/user/cart/edit-cart.php';
@@ -23,14 +36,23 @@ include 'functions/user/cart/edit-cart.php';
 
     <link rel="stylesheet" href="assets/css/user/app.css">
 
-    <script>
+    <!-- <script>
         window.CART = {
             addUrl: "functions/cart/add.php",
             updateUrl: "functions/cart/update.php",
             removeUrl: "functions/cart/remove.php",
             cartUrl: "cart.php",
         };
-    </script>
+    </script> -->
+    <script>
+    window.CART = {
+        // Sử dụng đường dẫn đầy đủ từ hằng số URL đã define ở trên
+        addUrl: "<?php echo URL; ?>functions/user/cart/cart-controller.php",
+        updateUrl: "<?php echo URL; ?>functions/user/cart/update.php",
+        removeUrl: "<?php echo URL; ?>functions/user/cart/remove.php",
+        cartUrl: "<?php echo URL; ?>index.php?page=cart",
+    };
+</script>
 </head>
 
 <body class="d-flex flex-column min-vh-100">

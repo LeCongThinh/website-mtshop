@@ -92,7 +92,7 @@ function createOrderRecord($con, $user_id, $post_data, $cartItems, $totalAmount)
         }
 
         // 4. Xóa giỏ hàng
-        mysqli_query($con, "DELETE FROM carts WHERE user_id = $user_id");
+        // mysqli_query($con, "DELETE FROM carts WHERE user_id = $user_id");
 
         mysqli_commit($con);
 
@@ -117,7 +117,8 @@ function generateVNPAYUrl($orderCode, $totalAmount)
     $vnp_TmnCode = "MWZZ6ERJ"; // Mã Website tại VNPAY
     $vnp_HashSecret = "SIDBVLSZSH1UQZ4NPK1NQF1OJVTA2SJP"; // Chuỗi bí mật
     $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    $vnp_Returnurl = "http://localhost/project-php/website-mtshop/index.php?page=vnpay_return";
+    // $vnp_Returnurl = "http://localhost/project-php/website-mtshop/index.php?page=vnpay_return";
+    $vnp_Returnurl = URL . "index.php?page=vnpay_return";
 
     $startTime = date("YmdHis");
     // Tạo thời gian hết hạn sau 15 phút

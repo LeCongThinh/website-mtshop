@@ -1,6 +1,7 @@
 <?php
 include('../includes/connect.php');
 include('../functions/common_functions.php');
+include('../functions/admin/statistics/statistics_functions.php');
 ob_start();
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -31,7 +32,6 @@ if ($row = mysqli_fetch_array($get_user_result)) {
     $admin_phone = $row['phone'];
     $admin_email = $row['email'];
     $admin_join = $row['created_at'];
-
 } else {
     // Đề phòng trường hợp tài khoản vừa bị xóa khỏi DB
     session_destroy();
@@ -207,7 +207,7 @@ if ($row = mysqli_fetch_array($get_user_result)) {
             <div class="container-fluid">
                 <?php if (isset($_GET['status']) || isset($_GET['error'])): ?>
                     <script>
-                        document.addEventListener("DOMContentLoaded", function () {
+                        document.addEventListener("DOMContentLoaded", function() {
                             <?php
                             $type = $_GET['status'] ?? $_GET['error'];
 
@@ -242,6 +242,10 @@ if ($row = mysqli_fetch_array($get_user_result)) {
                 <!-- Area for Dynamic Content -->
                 <div class="card card-custom p-4">
                     <?php
+                    //Thống kê sản phẩm
+                    if (isset($_GET['dashboard']) || empty($_SERVER['QUERY_STRING'])) {
+        include('./statistics/dashboard_view.php');
+    }
                     // Quản lý sản phẩm
                     if (isset($_GET['view_product'])) {
                         include('./products/view_product.php');

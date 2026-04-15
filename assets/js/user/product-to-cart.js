@@ -1,12 +1,12 @@
 document.addEventListener('DOMContentLoaded', function () {
     console.log('MTShop: Shopping Cart System Ready');
 
-    // Cấu hình ưu tiên lấy từ window.CART đã khai báo ở index.php
+    // Cấu hình linh hoạt từ window.CART
     const CONFIG = {
-        addUrl: '/project-php/website-mtshop/functions/user/cart/cart-controller.php',
-        cartUrl: 'index.php?page=cart',
+        addUrl: window.CART.addUrl, 
+        cartUrl: window.CART.cartUrl,
         badgeSelector: '#cart-count'
-    };
+    }
 
     // --- 1. Xử lý cho tất cả các nút Thêm/Mua ---
     const handleCartAction = async (button, isRedirect = false) => {
@@ -18,8 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Hiệu ứng Loading
         button.disabled = true;
         button.innerHTML = `<span class="spinner-border spinner-border-sm" role="status"></span> ${isRedirect ? 'Đang xử lý...' : ''}`;
-        await new Promise(resolve => setTimeout(resolve, 300));
-
+        
         try {
             const formData = new FormData();
             formData.append('product_id', productId);
@@ -43,20 +42,29 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 if (isRedirect) {
-                    // Nếu là "Mua ngay" -> Chuyển trang
                     window.location.href = CONFIG.cartUrl;
                 } else {
                     button.innerHTML = '<i class="bi bi-check-lg me-1"></i> Đã thêm';
                     button.classList.replace('btn-outline-primary', 'btn-success');
+                    
+                    // SỬA TẠI ĐÂY: Dùng showAlert thay cho showToast
+                    if (typeof showAlert === 'function') {
+                        showAlert('mainAlert', 'Đã thêm sản phẩm vào giỏ hàng!', 'success', 3000);
+                    }
                 }
             } else {
-                showToast(data.message || 'Không thể thêm hàng', 'warning');
+                // SỬA TẠI ĐÂY: Dùng showAlert
+                if (typeof showAlert === 'function') {
+                    showAlert('mainAlert', data.message || 'Không thể thêm hàng', 'warning', 3000);
+                }
             }
         } catch (err) {
             console.error('Cart Error:', err);
-            showToast('Có lỗi xảy ra, vui lòng thử lại!', 'danger');
+            // SỬA TẠI ĐÂY: Dùng showAlert
+            if (typeof showAlert === 'function') {
+                showAlert('mainAlert', 'Có lỗi xảy ra, vui lòng thử lại!', 'danger', 3000);
+            }
         } finally {
-            // Khôi phục nút nếu không chuyển trang
             if (!isRedirect) {
                 setTimeout(() => {
                     button.disabled = false;
@@ -64,7 +72,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     button.classList.replace('btn-success', 'btn-outline-primary');
                 }, 2000);
             } else {
-                // Nếu lỗi Mua ngay thì mới mở lại nút
                 button.disabled = false;
                 button.innerHTML = originalHTML;
             }

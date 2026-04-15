@@ -126,6 +126,21 @@
                                     </div>
                                 </label>
                             </div>
+                            <div class="mb-3">
+    <input class="form-check-input d-none payment-check" type="radio" name="payment_method"
+        id="method_qr" value="qr">
+    <label
+        class="form-check-label d-flex align-items-center p-3 border rounded-3 payment-label payment-option w-100"
+        for="method_qr" style="cursor:pointer;">
+        <div class="flex-shrink-0">
+            <i class="bi bi-qr-code-scan fs-4 text-primary"></i>
+        </div>
+        <div class="flex-grow-1 ms-3">
+            <div class="fw-bold">Chuyển khoản qua mã QR</div>
+            <div class="text-muted small">Tự động xác nhận đơn hàng qua App ngân hàng</div>
+        </div>
+    </label>
+</div>
                         </div>
                     </div>
                 </div>
