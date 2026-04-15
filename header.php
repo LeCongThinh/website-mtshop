@@ -1,4 +1,5 @@
 <?php
+//aaaaaaaa
 // 1. XỬ LÝ LOGIC ĐẦU TRANG
 $total_cart_items = 0;
 // Đường dẫn ảnh mặc định (tính từ gốc thư mục web của bạn)
