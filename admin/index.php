@@ -302,14 +302,9 @@ if ($row = mysqli_fetch_array($get_user_result)) {
                     if (isset($_GET['edit_post'])) {
                         include('./posts/edit_post.php');
                     }
-
-                    // Mặc định nếu không chọn gì
-                    if (empty($_SERVER['QUERY_STRING'])) {
-                        echo "<div class='text-center py-5'>
-                                    <img src='https://cdn-icons-png.flaticon.com/512/2038/2038032.png' style='width: 150px; opacity: 0.5;'>
-                                    <h3 class='mt-3 text-muted'>Chào mừng trở lại, $admin_name!</h3>
-                                    <p>Chọn một chức năng bên trái để bắt đầu quản lý.</p>
-                                  </div>";
+                    // Thống kê đơn hàng
+                    if (empty($_GET) || (isset($_GET['action']) && $_GET['action'] == 'get_revenue_data')) {
+                        include('./dashboard/order_statistics.php');
                     }
                     ?>
                 </div>
@@ -321,6 +316,8 @@ if ($row = mysqli_fetch_array($get_user_result)) {
 <?php include('./accounts/change_password.php'); ?>
 <script src="../assets/js/bootstrap.bundle.js"></script>
 <script src="../assets/js/admin/show_modal_order.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../assets/js/admin/handle_order_statistics.js"></script> -->
 
 </body>
 
