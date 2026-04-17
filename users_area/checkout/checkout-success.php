@@ -72,7 +72,7 @@ if (isset($_SESSION['user_id'])) {
                                 style="border-radius: 10px;">
                                 <i class="bi bi-house-door me-2"></i>Tiếp tục mua sắm
                             </a>
-                            <a href="<?= URL ?>index.php?page=my-orders"
+                            <a href="index.php?page=order-detail&code=<?= $order['order_code'] ?>"
                                 class="btn btn-primary px-4 py-2 fw-bold shadow-sm"
                                 style="border-radius: 10px; background: linear-gradient(45deg, #0d6efd, #004dc7); border: none;">
                                 <i class="bi bi-file-earmark-text me-2"></i>Xem đơn hàng của tôi

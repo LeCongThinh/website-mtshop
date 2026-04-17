@@ -11,12 +11,12 @@ require_once(__DIR__ . "/../functions/user/checkout/checkout-controller.php");
 function getOrderStatusBadge($status)
 {
     return match ($status) {
-        'pending'   => ['class' => 'bg-warning text-dark', 'text' => 'Chờ duyệt đơn'],
-        'confirmed' => ['class' => 'bg-primary', 'text' => 'Đã xác nhận đơn hàng'],
-        'shipping'  => ['class' => 'bg-info', 'text' => 'Đang giao hàng'],
-        'delivered' => ['class' => 'bg-success', 'text' => 'Giao thành công'],
-        'cancelled' => ['class' => 'bg-danger', 'text' => 'Đã hủy đơn'],
-        default     => ['class' => 'bg-secondary', 'text' => 'Không rõ']
+        'pending' => ['class' => 'bg-warning-subtle text-warning border border-warning', 'text' => 'Chờ duyệt đơn'],
+        'confirmed' => ['class' => 'bg-primary-subtle text-primary border border-primary', 'text' => 'Đã xác nhận đơn hàng'],
+        'shipping' => ['class' => 'bg-info-subtle text-info border border-info', 'text' => 'Đang giao hàng'],
+        'delivered' => ['class' => 'bg-success-subtle text-success border border-success', 'text' => 'Giao thành công'],
+        'cancelled' => ['class' => 'bg-danger-subtle text-danger border border-danger', 'text' => 'Đã hủy đơn'],
+        default => ['class' => 'bg-secondary-subtle text-secondary border border-secondary', 'text' => 'Không rõ']
     };
 }
 
@@ -24,11 +24,11 @@ function getOrderStatusBadge($status)
 function getPaymentStatusBadge($status)
 {
     return match ($status) {
-        'pending'  => ['class' => 'bg-secondary', 'text' => 'Chưa thanh toán'],
-        'paid'     => ['class' => 'bg-success', 'text' => 'Đã thanh toán'],
-        'failed'   => ['class' => 'bg-danger', 'text' => 'Thanh toán thất bại'],
-        'refunded' => ['class' => 'bg-warning text-dark', 'text' => 'Đã hoàn tiền'],
-        default    => ['class' => 'bg-secondary', 'text' => 'Chưa rõ']
+        'pending' => ['class' => 'bg-secondary-subtle text-secondary border border-secondary', 'text' => 'Chưa thanh toán'],
+        'paid' => ['class' => 'bg-success-subtle text-success border border-success', 'text' => 'Đã thanh toán'],
+        'failed' => ['class' => 'bg-danger-subtle text-danger border border-danger', 'text' => 'Thanh toán thất bại'],
+        'refunded' => ['class' => 'bg-warning-subtle text-warning border border-warning', 'text' => 'Đã hoàn tiền'],
+        default => ['class' => 'bg-secondary', 'text' => 'Chưa rõ']
     };
 }
 
@@ -558,7 +558,7 @@ elseif ($page === 'sepay-webhook') {
                     updated_at = NOW() 
                     WHERE REPLACE(order_code, '-', '') = ? 
                     AND payment_status = 'pending'";
-            
+
             $stmt = mysqli_prepare($con, $sql);
             mysqli_stmt_bind_param($stmt, "s", $code_clean);
             mysqli_stmt_execute($stmt);
@@ -574,7 +574,7 @@ elseif ($page === 'sepay-webhook') {
                 $search = "%" . $matches[1] . "%";
                 mysqli_stmt_bind_param($stmt_like, "s", $search);
                 mysqli_stmt_execute($stmt_like);
-                
+
                 echo json_encode(['success' => true, 'msg' => 'Khớp tương đối']);
             }
         }
@@ -585,7 +585,7 @@ elseif ($page === 'sepay-webhook') {
 elseif ($page === 'check-order-status') {
     header('Content-Type: application/json');
     $order_code = $_GET['code'] ?? '';
-    
+
     $sql = "SELECT payment_status FROM orders WHERE order_code = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "s", $order_code);
@@ -627,7 +627,7 @@ elseif ($page === 'cancel-qr-order') {
 
         if ($order) {
             $order_id = $order['id'];
-            
+
             // 2. Hoàn trả số lượng vào kho sản phẩm
             $detailsQuery = mysqli_query($con, "SELECT product_id, quantity FROM order_details WHERE order_id = $order_id");
             while ($item = mysqli_fetch_assoc($detailsQuery)) {
@@ -645,8 +645,7 @@ elseif ($page === 'cancel-qr-order') {
     // Sau khi hoàn kho và xóa đơn "tạm", quay lại trang thanh toán
     header("Location: index.php?page=checkout");
     exit();
-}
-else {
+} else {
     $web_title = 'Trang không tồn tại - MTShop';
     $content_file = 'users_area/404.php';
 }

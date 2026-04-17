@@ -1,9 +1,14 @@
 <div class="container py-5">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index.php?page=my-orders">Đơn hàng của tôi</a></li>
-            <li class="breadcrumb-item active">Chi tiết #<?= $order['order_code'] ?></li>
-        </ol>
+            <li class="breadcrumb-item">
+                <a href="index.php?page=my-orders" class="text-decoration-none fw-medium text-muted">
+                    <i class="bi bi-bag-check me-1"></i>Đơn hàng của tôi
+                </a>
+            </li>
+            <li class="breadcrumb-item active fw-bold text-dark" aria-current="page">
+                Chi tiết #<?= $order['order_code'] ?>
+            </li>
     </nav>
 
     <div class="row">
@@ -15,7 +20,7 @@
                 <div class="card-body">
                     <?php foreach ($order_items as $item): ?>
                         <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
-                            <img src="<?= URL ?>admin/admin_images/<?= $item['product_thumbnail'] ?>"
+                            <img src="admin/admin_images/<?= $item['product_thumbnail'] ?>"
                                 style="width:70px; height:70px; object-fit:cover;"
                                 class="rounded-3 border p-1 bg-white shadow-sm"
                                 alt="<?= htmlspecialchars($item['product_name']) ?>">
@@ -26,13 +31,16 @@
                             </div>
 
                             <div class="text-end">
-                                <span class="fw-bold text-danger"><?= number_format($item['price'] * $item['quantity'], 0, ',', '.') ?>đ</span>
+                                <span
+                                    class="fw-bold text-danger"><?= number_format($item['price'] * $item['quantity'], 0, ',', '.') ?>đ</span>
                             </div>
                         </div>
                     <?php endforeach; ?>
 
                     <div class="text-end pt-2">
-                        <h5>Tổng thanh toán: <span class="text-danger fw-bold"><?= number_format($order['total_amount'], 0, ',', '.') ?>đ</span></h5>
+                        <h5>Tổng thanh toán: <span
+                                class="text-danger fw-bold"><?= number_format($order['total_amount'], 0, ',', '.') ?>đ</span>
+                        </h5>
                     </div>
                 </div>
             </div>

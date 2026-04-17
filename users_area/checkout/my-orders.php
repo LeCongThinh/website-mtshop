@@ -15,8 +15,8 @@
                         <th>Mã đơn hàng</th>
                         <th>Ngày đặt</th>
                         <th>Tổng tiền</th>
-                        <th>Thanh toán</th>
-                        <th>Trạng thái</th>
+                        <th>Trạng thái thanh toán</th>
+                        <th>Trạng thái đơn hàng</th>
                         <th>Hành động</th>
                     </tr>
                 </thead>
@@ -26,13 +26,6 @@
                             <td class="fw-bold text-primary">#<?= $item['order_code'] ?></td>
                             <td><?= date('d/m/Y H:i', strtotime($item['created_at'])) ?></td>
                             <td class="fw-bold text-danger"><?= number_format($item['total_amount'], 0, ',', '.') ?>đ</td>
-                            <td>
-                                <?php if ($item['payment_status'] === 'paid'): ?>
-                                    <span class="badge bg-success-subtle text-success border border-success">Đã thanh toán</span>
-                                <?php else: ?>
-                                    <span class="badge bg-warning-subtle text-warning border border-warning">Chờ thanh toán</span>
-                                <?php endif; ?>
-                            </td>
                             <td>
                                 <?php $p_badge = getPaymentStatusBadge($item['payment_status']); ?>
                                 <span class="badge <?= $p_badge['class'] ?> fw-bold">
@@ -46,13 +39,12 @@
                                     <?= $o_badge['text'] ?>
                                 </span>
                             </td>
-                          <td class="text-center">
-    <a href="index.php?page=order-detail&code=<?= $item['order_code'] ?>" 
-       class="btn btn-sm btn-outline-primary rounded-pill px-3" 
-       title="Xem chi tiết đơn hàng">
-        <i class="bi bi-eye-fill me-1"></i> Xem
-    </a>
-</td>
+                            <td>
+                                <a href="index.php?page=order-detail&code=<?= $item['order_code'] ?>"
+                                    class="btn btn-sm btn-outline-primary rounded-3 px-3" title="Xem chi tiết đơn hàng">
+                                    <i class="bi bi-eye-fill me-1"></i> Xem đơn hàng
+                                </a>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

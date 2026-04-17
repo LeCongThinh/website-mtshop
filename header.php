@@ -95,7 +95,7 @@ if (isset($_SESSION['user_id'])) {
                         </a>
                         <ul class="dropdown-menu shadow border-0 dropdown-menu-end">
                             <li><a class="dropdown-item py-2" href="index.php?page=profile"><i class="bi bi-person me-2"></i> Hồ sơ cá nhân</a></li>
-                            <li><a class="dropdown-item py-2" href="index.php?page=my-orders"><i class="bi bi-bag me-2"></i> Đơn hàng</a></li>
+                            <li><a class="dropdown-item py-2" href="index.php?page=my-orders"><i class="bi bi-bag me-2"></i> Lịch sử mua hàng</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a href="functions/user/authentication/logout.php" class="dropdown-item text-danger py-2"><i class="bi bi-box-arrow-right me-2"></i> Đăng xuất</a></li>
                         </ul>
