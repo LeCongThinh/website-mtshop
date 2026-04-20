@@ -3,9 +3,10 @@ session_start();
 
 // Giải pháp tối ưu cho ngrok: Kiểm tra thêm header X-Forwarded-Proto
 $protocol = 'http://';
-if ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || 
-    $_SERVER['SERVER_PORT'] == 443 || 
-    (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) {
+if ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
+    $_SERVER['SERVER_PORT'] == 443 ||
+    (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')
+) {
     $protocol = 'https://';
 }
 
@@ -39,23 +40,15 @@ include 'functions/user/cart/edit-cart.php';
 
     <link rel="stylesheet" href="assets/css/user/app.css">
 
-    <!-- <script>
-        window.CART = {
-            addUrl: "functions/cart/add.php",
-            updateUrl: "functions/cart/update.php",
-            removeUrl: "functions/cart/remove.php",
-            cartUrl: "cart.php",
-        };
-    </script> -->
     <script>
-    window.CART = {
-        // Sử dụng đường dẫn đầy đủ từ hằng số URL đã define ở trên
-        addUrl: "<?php echo URL; ?>functions/user/cart/cart-controller.php",
-        updateUrl: "<?php echo URL; ?>functions/user/cart/update.php",
-        removeUrl: "<?php echo URL; ?>functions/user/cart/remove.php",
-        cartUrl: "<?php echo URL; ?>index.php?page=cart",
-    };
-</script>
+        window.CART = {
+            // Sử dụng đường dẫn đầy đủ từ hằng số URL đã define ở trên
+            addUrl: "<?php echo URL; ?>functions/user/cart/cart-controller.php",
+            updateUrl: "<?php echo URL; ?>functions/user/cart/update.php",
+            removeUrl: "<?php echo URL; ?>functions/user/cart/remove.php",
+            cartUrl: "<?php echo URL; ?>index.php?page=cart",
+        };
+    </script>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -80,7 +73,7 @@ include 'functions/user/cart/edit-cart.php';
             style="position: fixed; top: 50px; right: 5px; z-index: 10000; width: 100%; max-width: 480px; pointer-events: none;">
         </div>
 
-       <?php
+        <?php
         // Lúc này biến $data từ route.php đã sẵn sàng để file con sử dụng
         if (isset($content_file) && file_exists($content_file)) {
             include($content_file);
@@ -111,8 +104,7 @@ include 'functions/user/cart/edit-cart.php';
                 if (type === 'success') {
                     const user = params.get('user') || 'bạn';
                     message = `Chào mừng ${user} đã quay trở lại!`;
-                }
-                else if (type === 'has_cart') {
+                } else if (type === 'has_cart') {
                     const qty = params.get('qty') || 0;
                     message = `Chào mừng trở lại! Bạn có ${qty} sản phẩm trong giỏ hàng.`;
                     alertType = "info";
@@ -123,6 +115,36 @@ include 'functions/user/cart/edit-cart.php';
                 }
                 // 4. Làm sạch URL (Xóa các tham số login để không hiện lại khi F5)
                 const newUrl = window.location.pathname + (params.get('page') ? '?page=' + params.get('page') : '');
+                window.history.replaceState({}, document.title, newUrl);
+            }
+            // Thông báo cập nhật tài khoản
+            if (params.has('update')) {
+                const updateType = params.get('update');
+                let message = "";
+                let alertType = "success";
+
+                switch (updateType) {
+                    case 'success':
+                        message = "Cập nhật thông tin tài khoản thành công!";
+                        alertType = "success";
+                        break;
+                    case 'error':
+                        message = "Lỗi hệ thống: Không thể cập nhật dữ liệu!";
+                        alertType = "danger";
+                        break;
+                    case 'upload_error':
+                        message = "Lỗi: Không thể tải ảnh lên máy chủ!";
+                        alertType = "warning";
+                        break;
+                }
+
+                if (message !== "") {
+                    showAlert('mainAlert', message, alertType, 4000);
+                }
+
+                // Dọn dẹp URL
+                const page = params.get('page') || 'profile';
+                const newUrl = window.location.pathname + '?page=' + page;
                 window.history.replaceState({}, document.title, newUrl);
             }
         });

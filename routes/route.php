@@ -2,6 +2,7 @@
 require_once(__DIR__ . "/../includes/connect.php");
 require_once(__DIR__ . "/../functions/user/handle-product/product-controller.php");
 require_once(__DIR__ . "/../functions/user/home-controller.php");
+require_once(__DIR__ . "/../functions/user/authentication/account_profile.php");
 require_once(__DIR__ . "/../functions/user/search-controller.php");
 require_once(__DIR__ . "/../functions/user/checkout/checkout-controller.php");
 
@@ -285,44 +286,7 @@ elseif ($page === 'checkout') {
     $web_title = 'Thanh toán đơn hàng - MTShop.com';
     $content_file = 'users_area/checkout/view-checkout.php';
 }
-// Xử lý đơn hàng thanh toán bằng tiền mặt
-// elseif ($page === 'process-checkout') {
-//     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-//         $user_id = $_SESSION['user_id'];
 
-//         // Lấy dữ liệu giỏ hàng để tính toán lại giá tại Server
-//         $checkoutData = getCheckoutData($con, $user_id);
-//         $cartItems = $checkoutData['cartItems'];
-//         $totalAmount = $checkoutData['totalOrder'];
-
-//         if (empty($cartItems)) {
-//             $_SESSION['error'] = "Giỏ hàng trống!";
-//             header("Location: index.php?page=checkout");
-//             exit();
-//         }
-
-//         // Gọi hàm lưu đơn hàng đã nâng cấp ở trên
-//         $result = createOrderRecord($con, $user_id, $_POST, $cartItems, $totalAmount);
-
-//         if ($result['status'] === 'success') {
-//             // Kiểm tra khách chọn phương thức nào
-//             if ($result['payment_method'] === 'vnpay') {
-//                 // Nếu là VNPAY: Tạo URL và chuyển hướng sang cổng thanh toán
-//                 $vnpayUrl = generateVNPAYUrl($result['order_code'], $result['total_amount']);
-//                 header("Location: " . $vnpayUrl);
-//                 exit();
-//             } else {
-//                 // Nếu là COD: Chuyển hướng về trang thông báo thành công
-//                 header("Location: index.php?page=checkout-success&code=" . $result['order_code']);
-//                 exit();
-//             }
-//         } else {
-//             $_SESSION['error'] = $result['message'];
-//             header("Location: index.php?page=checkout");
-//             exit();
-//         }
-//     }
-// }
 // Xử lý đơn hàng
 elseif ($page === 'process-checkout') {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -473,67 +437,24 @@ elseif ($page === 'order-detail') {
     $web_title = 'Chi tiết đơn hàng #' . $order_code;
     $content_file = 'users_area/checkout/order-detail.php';
 }
-// 1. TRANG HIỂN THỊ HỒ SƠ (Dùng GET)
+// Hiển thị trang hồ sơ người dùng
 elseif ($page === 'profile') {
     if (!isset($_SESSION['user_id'])) {
         header("Location: index.php?page=home");
         exit();
     }
-
-    $user_id = $_SESSION['user_id'];
-    $sql = "SELECT * FROM users WHERE id = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $user_id);
-    mysqli_stmt_execute($stmt);
-    $user = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-
+    $user = getUserProfile($con, $_SESSION['user_id']);
     $web_title = 'Hồ sơ của tôi - MTShop';
-    // ĐÂY MỚI LÀ CHỖ CẦN CONTENT FILE
     $content_file = 'users_area/authentication/profile.php';
 }
-// Xử lý cập nhật hồ sơ
+// Cập nhật thông tin hồ sơ người dùng
 elseif ($page === 'update-profile') {
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['user_id'])) {
-        $user_id = $_SESSION['user_id'];
-        $name = mysqli_real_escape_string($con, $_POST['name']);
-        $phone = mysqli_real_escape_string($con, $_POST['phone']);
-        $address = mysqli_real_escape_string($con, $_POST['address']);
-
-        // Xử lý upload ảnh
-        $avatar_name = $_FILES['avatar']['name'];
-        $avatar_tmp = $_FILES['avatar']['tmp_name'];
-
-        if (!empty($avatar_name)) {
-            // 1. Tạo tên file duy nhất
-            $file_name = time() . "_" . $avatar_name;
-
-            // 2. Đường dẫn vật lý để PHP di chuyển file vào thư mục
-            $upload_path = "admin/admin_images/avatars/" . $file_name;
-
-            // 3. Chuỗi sẽ lưu vào database (có chữ avatars/ phía trước như bạn muốn)
-            $db_save_path = "avatars/" . $file_name;
-
-            if (move_uploaded_file($avatar_tmp, $upload_path)) {
-                // Cập nhật Database với giá trị $db_save_path
-                $sql = "UPDATE users SET name=?, phone=?, address=?, avatar=? WHERE id=?";
-                $stmt = mysqli_prepare($con, $sql);
-                mysqli_stmt_bind_param($stmt, "ssssi", $name, $phone, $address, $db_save_path, $user_id);
-            }
-        } else {
-            // Cập nhật không thay đổi ảnh
-            $sql = "UPDATE users SET name=?, phone=?, address=? WHERE id=?";
-            $stmt = mysqli_prepare($con, $sql);
-            mysqli_stmt_bind_param($stmt, "sssi", $name, $phone, $address, $user_id);
-        }
-
-        if (mysqli_stmt_execute($stmt)) {
-            $_SESSION['user_name'] = $name;
-            echo "<script>alert('Cập nhật thành công!'); window.location.href='index.php?page=profile';</script>";
-        }
+        // Gọi hàm xử lý cập nhật
+        $status = updateUserProfile($con, $_SESSION['user_id'], $_POST, $_FILES);
     }
     exit();
 }
-// API xử lý Webhook từ SePay
 // API xử lý Webhook từ SePay
 elseif ($page === 'sepay-webhook') {
     http_response_code(200);
