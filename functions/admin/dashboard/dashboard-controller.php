@@ -41,35 +41,34 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_revenue_data') {
             $data[] = (float) ($res['total'] ?? 0);
         }
     } else { 
-        // --- PHẦN CẬP NHẬT QUAN TRỌNG CHO XỬ LÝ TUẦN ---
-        
-        // Nếu có start_date (được gửi từ cú click trên biểu đồ), dùng nó. 
-        // Nếu không, mặc định lấy Thứ 2 của tuần hiện tại.
-        if (isset($_GET['start_date']) && !empty($_GET['start_date'])) {
-            $base_date = $_GET['start_date'];
-            // Đảm bảo đưa về đúng ngày Thứ 2 của tuần chứa ngày đó để tránh lệch labels
-            $time = strtotime($base_date);
-            $dayOfWeek = date('N', $time);
-            $monday = date('Y-m-d', strtotime("-" . ($dayOfWeek - 1) . " days", $time));
-        } else {
-            $dt = new DateTime();
-            $dt->setISODate((int) date('Y'), (int) date('W'));
-            $monday = $dt->format('Y-m-d');
-        }
+    // ==================== THỐNG KÊ THEO TUẦN ====================
+    $labels = [];
+    $data   = [];
 
-        for ($i = 0; $i < 7; $i++) {
-            $curr = date('Y-m-d', strtotime("$monday +$i days"));
-            $labels[] = date('d/m', strtotime($curr));
-
-            $sql = "SELECT SUM(total_amount) as total FROM `orders` 
-                    WHERE DATE(created_at) = '$curr' 
-                    AND (status = 'delivered' OR payment_status = 'paid')";
-
-            $query = mysqli_query($con, $sql);
-            $res = mysqli_fetch_assoc($query);
-            $data[] = (float) ($res['total'] ?? 0);
-        }
+    if (isset($_GET['start_date']) && !empty($_GET['start_date'])) {
+        // ←←← ĐÃ SỬA: Click từ biểu đồ tháng → dùng đúng ngày bắt đầu (1,8,15,22)
+        $start_date = $_GET['start_date'];
+    } else {
+        // Xem tuần bình thường (không click từ tháng) → vẫn lấy từ Thứ 2
+        $dt = new DateTime();
+        $dt->setISODate((int) date('Y'), (int) date('W'));
+        $start_date = $dt->format('Y-m-d');
     }
+
+    for ($i = 0; $i < 7; $i++) {
+        $curr = date('Y-m-d', strtotime("$start_date +$i days"));
+        
+        $labels[] = date('d/m', strtotime($curr));   // vd: 08/04
+
+        $sql = "SELECT SUM(total_amount) as total FROM `orders` 
+                WHERE DATE(created_at) = '$curr' 
+                AND (status = 'delivered' OR payment_status = 'paid')";
+
+        $query = mysqli_query($con, $sql);
+        $res = mysqli_fetch_assoc($query);
+        $data[] = (float) ($res['total'] ?? 0);
+    }
+}
 
     header('Content-Type: application/json');
     echo json_encode(['labels' => $labels, 'data' => $data], JSON_NUMERIC_CHECK);
@@ -129,16 +128,19 @@ $run_latest_orders = mysqli_query($con, $latest_orders_query);
 
 // 6. LẤY 5 SẢN PHẨM BÁN CHẠY NHẤT
 $top_products_query = "SELECT 
-                        product_id, 
-                        product_name, 
-                        price, 
-                        product_thumbnail,
-                        SUM(quantity) as total_sold,
-                        SUM(subtotal) as total_revenue
-                    FROM `order_details`
-                    GROUP BY product_id
+                        od.product_id, 
+                        od.product_name, 
+                        od.price, 
+                        od.product_thumbnail,
+                        SUM(od.quantity) as total_sold,
+                        SUM(od.subtotal) as total_revenue
+                    FROM `order_details` od
+                    INNER JOIN `orders` o ON od.order_id = o.id 
+                    WHERE o.payment_status = 'paid'
+                    GROUP BY od.product_id
                     ORDER BY total_sold DESC
                     LIMIT 5";
+
 $run_top_products = mysqli_query($con, $top_products_query);
 
 // 7. TỶ LỆ THEO TRẠNG THÁI ĐƠN HÀNG

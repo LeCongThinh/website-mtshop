@@ -32,7 +32,7 @@ if (isset($_SESSION['user_id'])) {
 ?>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-    <div class="container px-4 px-lg-5">
+    <div class="container px-4 px-lg-5 mt-1">
         <a class="navbar-brand d-flex align-items-center gap-2" href="index.php">
             <img src="assets/images/logo/icon-laptopshop.png" alt="" width="30" height="30">MTShop
         </a>
@@ -101,7 +101,7 @@ if (isset($_SESSION['user_id'])) {
                         </ul>
                     </div>
                 <?php else: ?>
-                    <a href="users_area/authentication/user_login.php" class="btn btn-outline-primary btn-sm rounded-pill px-3">Đăng nhập</a>
+                    <a href="users_area/authentication/user_login.php" class="btn btn-outline-primary btn-sm rounded-3 px-3">Đăng nhập</a>  
                 <?php endif; ?>
             </div>
         </div>

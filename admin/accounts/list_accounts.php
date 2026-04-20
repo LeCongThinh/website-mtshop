@@ -104,7 +104,7 @@
                                     // Xử lý hiển thị Chức vụ
                                     switch ($user_role) {
                                         case 'admin':
-                                            $role_display = "<span class='badge rounded-pill bg-danger'><i class='fas fa-shield-alt me-1'></i> Quản trị</span>";
+                                            $role_display = "<span class='badge rounded-pill bg-danger'><i class='fas fa-shield-alt me-1'></i> Quản trị viên</span>";
                                             break;
                                         case 'staff':
                                             $role_display = "<span class='badge rounded-pill bg-primary'><i class='fas fa-user-tie me-1'></i> Nhân viên</span>";

@@ -10,7 +10,10 @@ if ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
 }
 
 $domainName = $_SERVER['HTTP_HOST'];
-define('URL', $protocol . $domainName . '/website-mtshop/');
+// define('URL', $protocol . $domainName . '/project-php/website-mtshop/');
+$basePath = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
+
+define('URL', $protocol . $domainName . $basePath . '/');
 
 header('Access-Control-Allow-Origin: *');
 

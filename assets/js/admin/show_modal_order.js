@@ -31,7 +31,18 @@ function showOrderDetail(orderId) {
                 }
 
                 // 2. Trạng thái thanh toán
-                document.getElementById('od-payment-method').innerText = (order.payment_method === 'vnpay') ? 'VNPAY' : 'Tiền mặt (COD)';
+                  const paymentMethods = {
+                    cod: 'Tiền mặt (COD)',
+                    momo: 'MoMo',
+                    vnpay: 'VNPAY',
+                    qr_code: 'QR CODE'
+                };
+
+                const method = (order.payment_method || '').trim().toLowerCase();
+
+                document.getElementById('od-payment-method').innerText =
+                    paymentMethods[method] || 'Không xác định';
+
                 const pMap = {
                     'pending': '<span class="text-secondary fw-bold">Chưa thanh toán</span>',
                     'paid': '<span class="text-success fw-bold">Đã thanh toán</span>',

@@ -43,7 +43,7 @@
                         <div class="bg-light rounded-4 p-3 border h-100">
                             <div class="mb-3">
                                 <label class="d-block small text-muted mb-1">Thanh toán qua:</label>
-                                <span class="badge bg-white text-dark border px-2 py-1"
+                                <span class="bg-success-subtle text-success border border-success rounded-3 px-2 py-1 fw-bold"
                                     id="od-payment-method">---</span>
                             </div>
                             <div class="mb-3">

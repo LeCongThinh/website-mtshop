@@ -53,7 +53,8 @@ if ($row = mysqli_fetch_array($get_user_result)) {
     <!-- Thêm Font Awesome để hiện Icon trong Sidebar -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <link rel="shortcut icon" type="image/x-icon" href="../assets/images/logo/icon-laptopshop.png" />
+    <link rel="shortcut icon" type="image/x-icon"
+        href="/project-php/website-mtshop/assets/images/logo/icon-laptopshop.png" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Thêm Google Font Inter cho hiện đại -->

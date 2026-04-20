@@ -58,7 +58,7 @@ include __DIR__ . '/../../functions/admin/dashboard/dashboard-controller.php';
                     <div class="d-flex align-items-center">
                         <span
                             class="badge <?php echo $cust_percent >= 0 ? 'bg-success' : 'bg-danger'; ?> bg-opacity-25 small fw-bold text-white">
-                            <i class="fas <?php echo $cust_percent >= 0 ? 'fa-arrow-down' : 'fa-arrow-up'; ?> me-1"></i>
+                            <i class="fas <?php echo $cust_percent >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'; ?> me-1"></i>
                             <?php echo abs($cust_percent); ?>%
                         </span>
                         <span class="ms-2 small text-white-50">trong 7 ngày</span>
@@ -94,9 +94,9 @@ include __DIR__ . '/../../functions/admin/dashboard/dashboard-controller.php';
 
                         <div class="d-flex gap-2">
                             <select id="filterType" class="form-select form-select-sm w-auto bg-light border-0">
-                                <option value="week">Theo Tuần (7 ngày)</option>
-                                <option value="month">Theo Tháng (4 tuần)</option>
-                                <option value="year">Theo Năm (12 tháng)</option>
+                                <option value="week">Thống kê theo ngày</option>
+                                <option value="month">Thống kê theo tháng</option>
+                                <option value="year">Thống kê theo năm</option>
                             </select>
 
                             <select id="selectMonth" class="form-select form-select-sm w-auto bg-light border-0 d-none">
@@ -122,7 +122,7 @@ include __DIR__ . '/../../functions/admin/dashboard/dashboard-controller.php';
                 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
                 <script>
-                    document.addEventListener('DOMContentLoaded', function () {
+                    document.addEventListener('DOMContentLoaded', function() {
                         const canvas = document.getElementById('revenueChart');
                         if (!canvas) return;
                         const ctx = canvas.getContext('2d');
@@ -181,7 +181,7 @@ include __DIR__ . '/../../functions/admin/dashboard/dashboard-controller.php';
                                         y: {
                                             beginAtZero: true,
                                             ticks: {
-                                                callback: function (value) {
+                                                callback: function(value) {
                                                     return value.toLocaleString('vi-VN') + 'đ';
                                                 }
                                             }
@@ -217,8 +217,9 @@ include __DIR__ . '/../../functions/admin/dashboard/dashboard-controller.php';
                                 .then(res => {
                                     let finalLabels = res.labels;
                                     if (type === 'week') {
-                                        const dayNames = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
-                                        finalLabels = res.labels.map((dateStr, index) => `${dayNames[index]} (${dateStr})`);
+                                        finalLabels = res.labels; // chỉ giữ dd/mm
+                                    } else {
+                                        finalLabels = res.labels;
                                     }
 
                                     revenueChart.data.labels = finalLabels;
@@ -265,7 +266,7 @@ include __DIR__ . '/../../functions/admin/dashboard/dashboard-controller.php';
                                 <?php
                                 if (mysqli_num_rows($run_top_products) > 0):
                                     while ($row = mysqli_fetch_assoc($run_top_products)):
-                                        ?>
+                                ?>
                                         <tr>
                                             <td class="ps-3">
                                                 <div class="d-flex align-items-center">
@@ -293,7 +294,7 @@ include __DIR__ . '/../../functions/admin/dashboard/dashboard-controller.php';
                                                 <?php echo number_format($row['total_revenue'], 0, ',', '.'); ?>đ
                                             </td>
                                         </tr>
-                                        <?php
+                                <?php
                                     endwhile;
                                 else:
                                     echo '<tr><td colspan="4" class="text-center py-5 text-muted small">Chưa có dữ liệu bán hàng</td></tr>';
@@ -322,7 +323,7 @@ include __DIR__ . '/../../functions/admin/dashboard/dashboard-controller.php';
                                 'cancelled' => ['bg' => 'bg-danger bg-opacity-10', 'text' => 'text-danger', 'label' => 'Đã hủy', 'icon' => 'fa-circle-xmark'],
                                 default => ['bg' => 'bg-primary-subtle', 'text' => 'text-primary', 'label' => $order['status'], 'icon' => 'fa-shopping-bag']
                             };
-                            ?>
+                    ?>
                             <div class="d-flex align-items-center mb-4 border-bottom pb-3">
                                 <div class="flex-shrink-0 <?php echo $status_class['bg'] . ' ' . $status_class['text']; ?> rounded-circle d-flex align-items-center justify-content-center"
                                     style="width: 40px; height: 40px;">
@@ -345,7 +346,7 @@ include __DIR__ . '/../../functions/admin/dashboard/dashboard-controller.php';
                                     </span>
                                 </div>
                             </div>
-                            <?php
+                    <?php
                         endwhile;
                     else:
                         echo '<p class="text-center text-muted">Chưa có đơn hàng nào.</p>';
