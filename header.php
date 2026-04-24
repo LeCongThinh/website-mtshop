@@ -2,17 +2,17 @@
 // 1. XỬ LÝ LOGIC ĐẦU TRANG
 $total_cart_items = 0;
 // Đường dẫn ảnh mặc định (tính từ gốc thư mục web của bạn)
-$default_avatar = 'admin/admin_images/avatars/blank_user.png'; 
-$user_avatar = $default_avatar; 
+$default_avatar = 'admin/admin_images/avatars/blank_user.png';
+$user_avatar = $default_avatar;
 
 if (isset($_SESSION['user_id'])) {
     $u_id = $_SESSION['user_id'];
-    
+
     $res_user = mysqli_query($con, "SELECT avatar FROM users WHERE id = $u_id");
     if ($res_user && $u_data = mysqli_fetch_assoc($res_user)) {
         // Kiểm tra: 1. Cột avatar không trống | 2. File tồn tại trong thư mục admin
         $file_path = "admin/admin_images/" . $u_data['avatar'];
-        
+
         if (!empty($u_data['avatar']) && file_exists($file_path)) {
             $user_avatar = $file_path; // Gán full đường dẫn ảnh người dùng
         } else {
@@ -89,19 +89,21 @@ if (isset($_SESSION['user_id'])) {
                     <div class="dropdown">
                         <a href="#" class="d-flex align-items-center gap-2 text-decoration-none" data-bs-toggle="dropdown">
                             <div class="auth-icon-wrapper" style="width: 35px; height: 35px; overflow: hidden; border-radius: 50%; border: 1px solid #ddd; background: #eee;">
-    <img src="<?php echo $user_avatar; ?>" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
-</div>
+                                <img src="<?php echo $user_avatar; ?>" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
                             <span class="auth-text text-dark d-none d-sm-inline"><?php echo $_SESSION['user_name']; ?></span>
                         </a>
                         <ul class="dropdown-menu shadow border-0 dropdown-menu-end">
                             <li><a class="dropdown-item py-2" href="index.php?page=profile"><i class="bi bi-person me-2"></i> Hồ sơ cá nhân</a></li>
                             <li><a class="dropdown-item py-2" href="index.php?page=my-orders"><i class="bi bi-bag me-2"></i> Lịch sử mua hàng</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             <li><a href="functions/user/authentication/logout.php" class="dropdown-item text-danger py-2"><i class="bi bi-box-arrow-right me-2"></i> Đăng xuất</a></li>
                         </ul>
                     </div>
                 <?php else: ?>
-                    <a href="users_area/authentication/user_login.php" class="btn btn-outline-primary btn-sm rounded-3 px-3">Đăng nhập</a>  
+                    <a href="users_area/authentication/user_login.php" class="btn btn-outline-primary btn-sm rounded-3 px-3">Đăng nhập</a>
                 <?php endif; ?>
             </div>
         </div>
@@ -109,12 +111,44 @@ if (isset($_SESSION['user_id'])) {
 </nav>
 
 <style>
-    #search-results { border: 1px solid #ddd; border-top: none; }
-    .search-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #f1f1f1; text-decoration: none; color: #333; transition: background 0.2s; }
-    .search-item:hover { background-color: #f8f9fa; color: #000; }
-    .search-item img { width: 40px; height: 40px; object-fit: cover; margin-right: 15px; border-radius: 4px; }
-    .item-name { font-size: 14px; font-weight: 600; margin-bottom: 0; }
-    .item-price { font-size: 13px; color: #dc3545; }
+    #search-results {
+        border: 1px solid #ddd;
+        border-top: none;
+    }
+
+    .search-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #f1f1f1;
+        text-decoration: none;
+        color: #333;
+        transition: background 0.2s;
+    }
+
+    .search-item:hover {
+        background-color: #f8f9fa;
+        color: #000;
+    }
+
+    .search-item img {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        margin-right: 15px;
+        border-radius: 4px;
+    }
+
+    .item-name {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 0;
+    }
+
+    .item-price {
+        font-size: 13px;
+        color: #dc3545;
+    }
 </style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -129,7 +163,10 @@ if (isset($_SESSION['user_id'])) {
                 $.ajax({
                     url: 'functions/user/search-controller.php',
                     type: 'GET',
-                    data: { action: 'live', keyword: keyword },
+                    data: {
+                        action: 'live',
+                        keyword: keyword
+                    },
                     dataType: 'json',
                     success: function(data) {
                         searchResults.empty();

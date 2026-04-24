@@ -24,7 +24,7 @@
                             <div class="d-flex align-items-center text-muted small mb-4">
                                 <span class="me-3">
                                     <i class="bi bi-calendar3 me-1"></i>
-                                    <?php echo $dayName . ', ' . $formattedDate; ?>
+                                    <?php echo $post['day_name'] . ', ' . $post['formatted_date']; ?>
                                 </span>
                                 <span class="d-flex align-items-center">
                                     <i class="bi bi-person-fill me-1"></i>

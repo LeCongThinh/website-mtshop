@@ -6,9 +6,12 @@ require_once(__DIR__ . "/../functions/user/authentication/account_profile.php");
 require_once(__DIR__ . "/../functions/user/search-controller.php");
 require_once(__DIR__ . "/../functions/user/checkout/checkout-controller.php");
 require_once(__DIR__ . "/../functions/user/orders/order-controller.php");
+require_once(__DIR__ . "/../functions/user/posts/post-controller.php");
 
 // Khởi tạo order controller
 $orderCtrl = new OrderController();
+// Khởi tạo post controller
+$postCtrl = new PostController();
 
 // Hàm hiển thị Trạng thái Đơn hàng (Việt hóa đồng bộ Admin)
 function getOrderStatusBadge($status)
@@ -183,53 +186,22 @@ elseif ($page === 'all-products') {
 // Danh sách tất cả bài viết
 elseif ($page === 'all-news') {
     $web_title = 'Tất cả bài viết - MTShop';
-    $limit = 9; // số bài mỗi trang
-    $currentPage = isset($_GET['p']) ? (int) $_GET['p'] : 1;
-    $offset = ($currentPage - 1) * $limit;
-    // Đếm tổng bài viết
-    $countResult = mysqli_query($con, "SELECT COUNT(*) as total FROM posts WHERE status = 'active'");
-    $totalRows = mysqli_fetch_assoc($countResult)['total'];
-    $totalPages = ceil($totalRows / $limit);
-    // Query bài viết kèm tên tác giả
-    $stmt = mysqli_prepare($con, "
-        SELECT p.*, u.name as user_name
-        FROM posts p
-        LEFT JOIN users u ON p.user_id = u.id
-        WHERE p.status = 'active'
-        ORDER BY p.created_at DESC
-        LIMIT ? OFFSET ?
-    ");
-    mysqli_stmt_bind_param($stmt, "ii", $limit, $offset);
-    mysqli_stmt_execute($stmt);
-    $posts = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
+    $postData = $postCtrl->getAllPosts(9); 
+    $posts = $postData['posts'];
+    $totalPages = $postData['totalPages'];
+    $currentPage = $postData['currentPage'];
     $content_file = 'users_area/news/all-news.php';
 }
 // Chi tiết bài viết
 elseif ($page === 'news-detail') {
-    // Lấy slug từ URL
-    $slug = isset($_GET['slug']) ? mysqli_real_escape_string($con, $_GET['slug']) : '';
-
-    // Truy vấn dựa trên cột slug
-    $stmt = mysqli_prepare($con, "
-        SELECT p.*, u.name as user_name 
-        FROM posts p
-        LEFT JOIN users u ON p.user_id = u.id
-        WHERE p.slug = ? AND p.status = 'active'
-        LIMIT 1
-    ");
-
-    // "s" đại diện cho kiểu dữ liệu string
-    mysqli_stmt_bind_param($stmt, "s", $slug);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    $post = mysqli_fetch_assoc($result);
+    $slug = $_GET['slug'] ?? '';
+    $post = $postCtrl->getPostDetailBySlug($slug);
     if ($post) {
         $web_title = $post['title'] . ' - MTShop.com';
-        $timestamp = strtotime($post['created_at']);
-        $days = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
-        $dayName = $days[date('w', $timestamp)];
-        $formattedDate = date('d/m/Y', $timestamp);
         $content_file = 'users_area/news/news-detail.php';
+    } else {
+        header("Location: index.php?page=all-news");
+        exit();
     }
 }
 // Danh sách PC bán chạy nhất
@@ -355,31 +327,31 @@ elseif ($page === 'vnpay_return') {
     }
     exit();
 }
+
 // Thanh toán đơn hàng thành công
 elseif ($page === 'checkout-success') {
     // Lấy mã đơn hàng từ URL (?code=ORD-...)
     $order_code = $_GET['code'] ?? '';
     $user_id = $_SESSION['user_id'] ?? 0;
-
     // Gọi hàm từ controller
     $order = getOrderSuccessDetails($con, $order_code, $user_id);
-
     // Nếu mã code sai hoặc không thuộc về user này
     if (!$order) {
         header("Location: index.php?page=404");
         exit();
     }
-
     // Thiết lập cho layout
     $web_title = 'Thanh toán đơn hàng thành công #' . $order_code . ' - MTShop';
     $content_file = 'users_area/checkout/checkout-success.php';
 }
+
 // Danh sách đơn hàng của tôi
 elseif ($page === 'my-orders') {
     $data = $orderCtrl->index();
     // Hàm này tự động tạo các biến $orders, $web_title, $content_file từ mảng
     extract($data); 
 }
+
 // Xem chi tiết đơn hàng
 elseif ($page === 'order-detail') {
     $code = $_GET['code'] ?? '';
