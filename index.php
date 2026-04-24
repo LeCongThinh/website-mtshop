@@ -89,6 +89,7 @@ include 'functions/user/cart/edit-cart.php';
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Thêm sản phẩm vào giỏ hàng -->
     <script src="assets/js/user/product-to-cart.js"></script>
     <script src="assets/js/user/alert.js"></script>
     <script src="assets/js/user/handle-product-detail.js"></script>

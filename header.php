@@ -33,8 +33,8 @@ if (isset($_SESSION['user_id'])) {
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
     <div class="container px-4 px-lg-5 mt-1">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="index.php">
-            <img src="assets/images/logo/icon-laptopshop.png" alt="" width="30" height="30">MTShop
+        <a class="navbar-brand d-flex align-items-center gap-2 fw-semibold" href="index.php">
+            <img src="assets/images/logo/icon-laptopshop.png" alt="" width="30" height="30">MTSHOP
         </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"

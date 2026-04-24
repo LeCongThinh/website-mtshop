@@ -1,45 +1,5 @@
 <?php
-require_once(__DIR__ . "/../includes/connect.php");
-require_once(__DIR__ . "/../functions/user/handle-product/product-controller.php");
-require_once(__DIR__ . "/../functions/user/home-controller.php");
-require_once(__DIR__ . "/../functions/user/authentication/account_profile.php");
-require_once(__DIR__ . "/../functions/user/search-controller.php");
-require_once(__DIR__ . "/../functions/user/checkout/checkout-controller.php");
-require_once(__DIR__ . "/../functions/user/orders/order-controller.php");
-require_once(__DIR__ . "/../functions/user/posts/post-controller.php");
-require_once(__DIR__ . "/../functions/user/products/product-controller.php");
-
-// Khởi tạo order controller
-$orderCtrl = new OrderController();
-// Khởi tạo post controller
-$postCtrl = new PostController();
-// Khởi tạo product controller
-$productCtrl = new ProductController();
-
-// Hàm hiển thị Trạng thái Đơn hàng (Việt hóa đồng bộ Admin)
-function getOrderStatusBadge($status)
-{
-    return match ($status) {
-        'pending' => ['class' => 'bg-warning-subtle text-warning border border-warning', 'text' => 'Chờ duyệt đơn'],
-        'confirmed' => ['class' => 'bg-primary-subtle text-primary border border-primary', 'text' => 'Đã xác nhận đơn hàng'],
-        'shipping' => ['class' => 'bg-info-subtle text-info border border-info', 'text' => 'Đang giao hàng'],
-        'delivered' => ['class' => 'bg-success-subtle text-success border border-success', 'text' => 'Giao thành công'],
-        'cancelled' => ['class' => 'bg-danger-subtle text-danger border border-danger', 'text' => 'Đã hủy đơn'],
-        default => ['class' => 'bg-secondary-subtle text-secondary border border-secondary', 'text' => 'Không rõ']
-    };
-}
-
-// Hàm hiển thị Trạng thái Thanh toán (Việt hóa đồng bộ Admin)
-function getPaymentStatusBadge($status)
-{
-    return match ($status) {
-        'pending' => ['class' => 'bg-secondary-subtle text-secondary border border-secondary', 'text' => 'Chưa thanh toán'],
-        'paid' => ['class' => 'bg-success-subtle text-success border border-success', 'text' => 'Đã thanh toán'],
-        'failed' => ['class' => 'bg-danger-subtle text-danger border border-danger', 'text' => 'Thanh toán thất bại'],
-        'refunded' => ['class' => 'bg-warning-subtle text-warning border border-warning', 'text' => 'Đã hoàn tiền'],
-        default => ['class' => 'bg-secondary', 'text' => 'Chưa rõ']
-    };
-}
+require_once(__DIR__ . "/../includes/init.php");
 
 // Load categories cho header
 $result = mysqli_query($con, "SELECT * FROM categories WHERE parent_id IS NULL AND status = 'active'");
