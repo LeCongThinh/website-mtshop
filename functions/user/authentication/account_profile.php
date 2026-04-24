@@ -52,6 +52,4 @@ function updateUserProfile($con, $user_id, $data, $file)
         header("Location: index.php?page=profile&update=error");
         exit();
     }
-
-    return $result;
 }

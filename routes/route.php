@@ -5,8 +5,10 @@ require_once(__DIR__ . "/../functions/user/home-controller.php");
 require_once(__DIR__ . "/../functions/user/authentication/account_profile.php");
 require_once(__DIR__ . "/../functions/user/search-controller.php");
 require_once(__DIR__ . "/../functions/user/checkout/checkout-controller.php");
+require_once(__DIR__ . "/../functions/user/orders/order-controller.php");
 
-// --- HÀM HỖ TRỢ HIỂN THỊ TRẠNG THÁI (Dùng chung cho User Area) ---
+// Khởi tạo order controller
+$orderCtrl = new OrderController();
 
 // Hàm hiển thị Trạng thái Đơn hàng (Việt hóa đồng bộ Admin)
 function getOrderStatusBadge($status)
@@ -221,14 +223,12 @@ elseif ($page === 'news-detail') {
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $post = mysqli_fetch_assoc($result);
-
     if ($post) {
         $web_title = $post['title'] . ' - MTShop.com';
         $timestamp = strtotime($post['created_at']);
         $days = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
         $dayName = $days[date('w', $timestamp)];
         $formattedDate = date('d/m/Y', $timestamp);
-
         $content_file = 'users_area/news/news-detail.php';
     }
 }
@@ -236,25 +236,19 @@ elseif ($page === 'news-detail') {
 elseif ($page === 'all-best-selling-pc') {
     // Gọi hàm controller
     $data = showAllBestSellingPCs($con);
-
-    // Thiết lập các biến cần thiết cho view
     $web_title = $data['web_title'];
     $content_file = 'users_area/products/all-best-selling-pc.php';
-    // (Đảm bảo đường dẫn này đúng với file view bạn đã gửi ở trên)
 }
 // Danh sách Laptop bán chạy nhất
 elseif ($page === 'all-best-selling-laptop') {
     // Gọi hàm xử lý logic từ controller
     $data = showAllBestSellingLaptops($con);
-
-    // Thiết lập các biến cần thiết cho view
     $web_title = $data['web_title'];
     $content_file = 'users_area/products/all-best-selling-laptop.php';
 }
 // Danh sách màn hình bán chạy nhất
 elseif ($page === 'all-best-selling-monitor') {
     $data = showAllBestSellingMonitors($con);
-
     $web_title = $data['web_title'];
     $content_file = 'users_area/products/all-best-selling-monitor.php';
 }
@@ -382,61 +376,17 @@ elseif ($page === 'checkout-success') {
 }
 // Danh sách đơn hàng của tôi
 elseif ($page === 'my-orders') {
-    if (!isset($_SESSION['user_id'])) {
-        header("Location: " . URL . "index.php?page=home");
-        exit();
-    }
-
-    $user_id = $_SESSION['user_id'];
-
-    // Truy vấn danh sách đơn hàng của người dùng này
-    $sql = "SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $user_id);
-    mysqli_stmt_execute($stmt);
-    $orders = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
-
-    $web_title = 'Đơn hàng của tôi - MTShop';
-    $content_file = 'users_area/checkout/my-orders.php';
+    $data = $orderCtrl->index();
+    // Hàm này tự động tạo các biến $orders, $web_title, $content_file từ mảng
+    extract($data); 
 }
 // Xem chi tiết đơn hàng
 elseif ($page === 'order-detail') {
-    if (!isset($_SESSION['user_id'])) {
-        header("Location: index.php");
-        exit();
-    }
-
-    $order_code = $_GET['code'] ?? '';
-    $user_id = $_SESSION['user_id'];
-
-    // 1. Lấy thông tin chung của đơn hàng từ bảng orders
-    $sql_order = "SELECT * FROM orders WHERE order_code = ? AND user_id = ?";
-    $stmt = mysqli_prepare($con, $sql_order);
-    mysqli_stmt_bind_param($stmt, "si", $order_code, $user_id);
-    mysqli_stmt_execute($stmt);
-    $order = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-
-    if (!$order) {
-        header("Location: index.php?page=404");
-        exit();
-    }
-
-    // 2. Lấy danh sách sản phẩm (Dựa trên cấu trúc bảng bạn vừa gửi)
-    // Tôi giả định tên bảng này là 'order_items'. Nếu tên bảng khác, hãy đổi lại ở dòng dưới:
-    $sql_items = "SELECT * FROM order_details WHERE order_id = ?";
-
-    $stmt_items = mysqli_prepare($con, $sql_items);
-    if ($stmt_items === false) {
-        die("Lỗi SQL: " . mysqli_error($con));
-    }
-
-    mysqli_stmt_bind_param($stmt_items, "i", $order['id']);
-    mysqli_stmt_execute($stmt_items);
-    $order_items = mysqli_fetch_all(mysqli_stmt_get_result($stmt_items), MYSQLI_ASSOC);
-
-    $web_title = 'Chi tiết đơn hàng #' . $order_code;
-    $content_file = 'users_area/checkout/order-detail.php';
+    $code = $_GET['code'] ?? '';
+    $data = $orderCtrl->show($code);
+    extract($data);
 }
+
 // Hiển thị trang hồ sơ người dùng
 elseif ($page === 'profile') {
     if (!isset($_SESSION['user_id'])) {
@@ -447,6 +397,7 @@ elseif ($page === 'profile') {
     $web_title = 'Hồ sơ của tôi - MTShop';
     $content_file = 'users_area/authentication/profile.php';
 }
+
 // Cập nhật thông tin hồ sơ người dùng
 elseif ($page === 'update-profile') {
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['user_id'])) {
@@ -455,6 +406,7 @@ elseif ($page === 'update-profile') {
     }
     exit();
 }
+
 // API xử lý Webhook từ SePay
 elseif ($page === 'sepay-webhook') {
     http_response_code(200);
