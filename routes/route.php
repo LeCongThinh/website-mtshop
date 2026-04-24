@@ -7,11 +7,14 @@ require_once(__DIR__ . "/../functions/user/search-controller.php");
 require_once(__DIR__ . "/../functions/user/checkout/checkout-controller.php");
 require_once(__DIR__ . "/../functions/user/orders/order-controller.php");
 require_once(__DIR__ . "/../functions/user/posts/post-controller.php");
+require_once(__DIR__ . "/../functions/user/products/product-controller.php");
 
 // Khởi tạo order controller
 $orderCtrl = new OrderController();
 // Khởi tạo post controller
 $postCtrl = new PostController();
+// Khởi tạo product controller
+$productCtrl = new ProductController();
 
 // Hàm hiển thị Trạng thái Đơn hàng (Việt hóa đồng bộ Admin)
 function getOrderStatusBadge($status)
@@ -132,57 +135,18 @@ elseif ($page === 'subcategory') {
         exit();
     }
 }
-// Danh sách sản phẩm mới nhất
-elseif ($page === 'new-products') {
-    $web_title = 'Sản phẩm mới nhất - MTShop.com';
 
-    // Cấu hình phân trang (nếu bạn muốn trang này cũng có phân trang)
-    $limit = 20;
-    $currentPage = isset($_GET['p']) ? (int) $_GET['p'] : 1;
-    $offset = ($currentPage - 1) * $limit;
-
-    // 1. Đếm tổng số sản phẩm mới (Có thể thêm điều kiện thời gian nếu muốn)
-    $countQuery = mysqli_query($con, "SELECT COUNT(*) as total FROM products WHERE status = 'active'");
-    $totalRows = mysqli_fetch_assoc($countQuery)['total'];
-    $totalPages = ceil($totalRows / $limit);
-
-    // 2. Truy vấn danh sách sản phẩm mới nhất
-    $sql = "SELECT * FROM products 
-            WHERE status = 'active' 
-            ORDER BY created_at DESC, id DESC 
-            LIMIT ? OFFSET ?";
-
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ii", $limit, $offset);
-    mysqli_stmt_execute($stmt);
-    $products = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
-
-    // 3. Đường dẫn file hiển thị (Bạn có thể dùng chung file với all-product.php nếu giao diện giống nhau)
-    $content_file = 'users_area/products/new-product.php';
-}
 // Xem tất cả sản phẩm
 elseif ($page === 'all-products') {
-    $web_title = 'Tất cả sản phẩm mới - MTShop.com';
-
-    // Cấu hình phân trang
-    $limit = 10; // Số sản phẩm trên mỗi trang
-    $currentPage = isset($_GET['p']) ? (int) $_GET['p'] : 1;
-    $offset = ($currentPage - 1) * $limit;
-
-    // Lấy tổng số sản phẩm để tính số trang
-    $countQuery = mysqli_query($con, "SELECT COUNT(*) as total FROM products WHERE status = 'active'");
-    $totalRows = mysqli_fetch_assoc($countQuery)['total'];
-    $totalPages = ceil($totalRows / $limit);
-
-    // Truy vấn danh sách sản phẩm
-    $sql = "SELECT * FROM products WHERE status = 'active' ORDER BY created_at DESC LIMIT ? OFFSET ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ii", $limit, $offset);
-    mysqli_stmt_execute($stmt);
-    $products = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
-
+    $web_title = 'Tất cả sản phẩm - MTShop.com';
+    // Hiển thị 10 sản phẩm ở mỗi trang theo thời gian tạo mới nhất
+    $data = $productCtrl->getProducts(10, "created_at DESC");
+    $products = $data['products'];
+    $totalPages = $data['totalPages'];
+    $currentPage = $data['currentPage'];
     $content_file = 'users_area/products/all-product.php';
 }
+
 // Danh sách tất cả bài viết
 elseif ($page === 'all-news') {
     $web_title = 'Tất cả bài viết - MTShop';
@@ -459,7 +423,7 @@ elseif ($page === 'qr-payment') {
     }
 
     $web_title = 'Thanh toán đơn hàng qua QR #' . $order_code;
-    $content_file = 'users_area/checkout/qr-payment.php'; // Đường dẫn file giao diện sẽ tạo ở Bước 3
+    $content_file = 'users_area/checkout/qr-payment.php';
 }
 //xóa đơn quay lại giỏ hàng
 elseif ($page === 'cancel-qr-order') {
