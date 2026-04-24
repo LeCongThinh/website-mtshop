@@ -1,11 +1,13 @@
 #  MTShop - Premium Tech E-commerce
 
 <p align="center">
-  <img src="https://img.shields.io/badge/PHP-8.2-777bb4?style=for-the-badge&logo=php&logoColor=white" />
-  <img src="https://img.shields.io/badge/MySQL-Data-4479A1?style=for-the-badge&logo=mysql&logoColor=white" />
-  <img src="https://img.shields.io/badge/Bootstrap-5.3-7952b3?style=for-the-badge&logo=bootstrap&logoColor=white" />
-  <img src="https://img.shields.io/badge/Payment-VNPay%20%7C%20SePay-red?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=for-the-badge" />
+  <a href="https://mtshop.infinityfreeapp.com/" target="_blank">
+    <img src="https://img.shields.io/badge/Live_Demo-Visit_Website-2ea44f?style=for-the-badge&logo=googlechrome&logoColor=white" />
+  </a>
+  <img src="https://img.shields.io/badge/PHP-8.2-777BB4?style=for-the-badge&logo=php&logoColor=white" />
+  <img src="https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white" />
+  <img src="https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white" />
+  <img src="https://img.shields.io/badge/Payment-VNPay_|_SePay-005BAA?style=for-the-badge&logo=vnpay&logoColor=white" />
 </p>
 
 <p align="center">
