@@ -1,0 +1,14 @@
+<?php
+
+// API Key bạn vừa lấy từ Google AI Studio
+define('GEMINI_API_KEY', 'YOUR_API_KEY');
+
+// Tên Model mới nhất bạn đã test thành công
+define('GEMINI_MODEL', 'gemini-robotics-er-1.6-preview');
+
+// define('GEMINI_MODEL', 'gemini-robotics-er-1.5-preview');
+
+// Câu lệnh hệ thống để AI hiểu vai trò (System Instruction)
+define('SYSTEM_PROMPT', 'Bạn là chuyên gia tư vấn bán hàng của MTShop. Bạn am hiểu về Laptop và linh kiện. Hãy trả lời ngắn gọn, thân thiện bằng tiếng Việt và luôn hỗ trợ khách hàng mua sắm.');
+
+?>
