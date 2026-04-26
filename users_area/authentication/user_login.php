@@ -1,6 +1,5 @@
 <?php
 include __DIR__ . '/../../includes/connect.php';
-include __DIR__ . '/../../functions/common_functions.php';
 include __DIR__ . '/../../functions/user/authentication/login.php'; // Gọi file chứa hàm vào đây
 @session_start();
 

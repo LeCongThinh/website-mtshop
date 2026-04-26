@@ -1,6 +1,5 @@
 <?php
 include('../../includes/connect.php');
-include('../../functions/common_functions.php');
 include('../../functions/user/authentication/register.php'); 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();

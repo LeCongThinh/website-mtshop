@@ -4,8 +4,8 @@
     /* Nút tròn nổi */
     #chat-circle {
         position: fixed;
-        bottom: 80px;
-        right: 20px;
+        bottom: 70px;
+        right: 30px;
         width: 70px;
         height: 70px;
         border-radius: 50%;
@@ -199,6 +199,7 @@
     <div class="chat-tooltip">Tư vấn ngay!</div>
     <img src="assets/images/logo/chat-bot.png" alt="AI Chatbot">
 </div>
+
 
 <div id="chat-box">
     <div class="chat-header">

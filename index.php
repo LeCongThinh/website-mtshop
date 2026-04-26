@@ -82,8 +82,13 @@ include 'functions/user/cart/edit-cart.php';
         ?>
         
         <?php
+            // Zalo chat: nhắn tin trực tiếp với nhân viên cửa hàng
+            include("users_area/chatbot/zalo-chat.php");
+
+            // Chatbot AI: trợ lý ảo hỗ trợ mua hàng
             include("users_area/chatbot/ai-chatbot.php");
         ?>
+        
 
     </main>
 

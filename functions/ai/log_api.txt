@@ -1,36 +1,31 @@
 {
-  "error": {
-    "code": 429,
-    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-robotics-er-1.6-preview\nPlease retry in 36.355280515s.",
-    "status": "RESOURCE_EXHAUSTED",
-    "details": [
-      {
-        "@type": "type.googleapis.com/google.rpc.Help",
-        "links": [
+  "candidates": [
+    {
+      "content": {
+        "parts": [
           {
-            "description": "Learn more about Gemini API quotas",
-            "url": "https://ai.google.dev/gemini-api/docs/rate-limits"
+            "text": "Chào bạn! MTSHOP xin gửi đến bạn danh sách các mẫu laptop văn phòng hiện đang có sẵn tại cửa hàng:\n\n1. \"Laptop Acer Aspire Lite AL15 72P 999\"\nGiá bán: 17.990.000đ\nGiá khuyến mãi: 10.990.000đ\n\n2. \"Laptop Dell Inspiron 5440-PUS i5-1334U/512GB/16GB\"\nGiá bán: 16.990.000đ\nGiá khuyến mãi: 16.990.000đ\n\n3. \"Laptop MSI Modern 14 F13MG 466VN\"\nGiá bán: 14.990.000đ\nGiá khuyến mãi: 14.190.000đ\n\n4. \"Laptop LG Gram Book 15U50T-G.AV56A5\"\nGiá bán: 14.990.000đ\nGiá khuyến mãi: 14.990.000đ\n\n5. \"Laptop Dell Inspirion N3530 i5U165W11SLU (1334U)\"\nGiá bán: 18.490.000đ\nGiá khuyến mãi: 15.990.000đ",
+            "thoughtSignature": "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"
           }
-        ]
+        ],
+        "role": "model"
       },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 14110,
+    "candidatesTokenCount": 318,
+    "totalTokenCount": 15388,
+    "promptTokensDetails": [
       {
-        "@type": "type.googleapis.com/google.rpc.QuotaFailure",
-        "violations": [
-          {
-            "quotaMetric": "generativelanguage.googleapis.com/generate_content_free_tier_requests",
-            "quotaId": "GenerateRequestsPerDayPerProjectPerModel-FreeTier",
-            "quotaDimensions": {
-              "model": "gemini-robotics-er-1.6-preview",
-              "location": "global"
-            },
-            "quotaValue": "20"
-          }
-        ]
-      },
-      {
-        "@type": "type.googleapis.com/google.rpc.RetryInfo",
-        "retryDelay": "36s"
+        "modality": "TEXT",
+        "tokenCount": 14110
       }
-    ]
-  }
+    ],
+    "thoughtsTokenCount": 960
+  },
+  "modelVersion": "gemini-robotics-er-1.6-preview",
+  "responseId": "74vtaamWKL_n2roPy529qQ0"
 }
