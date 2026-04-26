@@ -8,6 +8,7 @@
   <img src="https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white" />
   <img src="https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white" />
   <img src="https://img.shields.io/badge/Payment-VNPay_|_SePay-005BAA?style=for-the-badge&logo=vnpay&logoColor=white" />
+  <img src="https://img.shields.io/badge/AI_Assistant-Gemini_Pro-FF6B6B?style=for-the-badge&logo=google-gemini&logoColor=white" />
 </p>
 
 <p align="center">
@@ -60,6 +61,13 @@ Dự án được thiết kế theo phong cách **High-Contrast Tech**, tập tr
 - [x] **Order Processing:** Quy trình duyệt đơn tự động hóa 3 trạng thái.
 - [x] **Analytics:** Báo cáo doanh thu và thống kê tăng trưởng người dùng.
 
+### 🤖 Trợ lý ảo thông minh (AI Integration)
+> Tích hợp trí tuệ nhân tạo để nâng tầm trải nghiệm chăm sóc khách hàng.
+
+- [x] **Gemini AI Chatbot:** Trò chuyện trực tiếp để nhận tư vấn cấu hình laptop phù hợp với ngân sách.
+- [x] **Floating UI:** Giao diện bong bóng chat hiện đại, hỗ trợ thu phóng và ẩn hiện linh hoạt.
+- [x] **Real-time Handling:** Sử dụng AJAX để giao tiếp với API mà không làm gián đoạn việc xem sản phẩm.
+
 ---
 
 ## 🛠 Tech Stack (Công nghệ sử dụng)
@@ -85,6 +93,10 @@ Dự án được thiết kế theo phong cách **High-Contrast Tech**, tập tr
     <td align="center" width="96">
       <img src="https://skillicons.dev/icons?i=html" width="48" height="48" alt="HTML5" />
       <br />HTML5/CSS3
+    </td>
+    <td align="center" width="96">
+      <img src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/googlegemini.svg" width="40" height="40" style="filter: invert(31%) sepia(94%) saturate(4135%) hue-rotate(211deg) brightness(96%) contrast(105%);" alt="Gemini" />
+      <br />Gemini API
     </td>
   </tr>
 </table>
