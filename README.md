@@ -95,7 +95,7 @@ Dự án được thiết kế theo phong cách **High-Contrast Tech**, tập tr
       <br />HTML5/CSS3
     </td>
     <td align="center" width="96">
-      <img src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/googlegemini.svg" width="40" height="40" style="filter: invert(31%) sepia(94%) saturate(4135%) hue-rotate(211deg) brightness(96%) contrast(105%);" alt="Gemini" />
+      <img src="https://skillicons.dev/icons?i=gcp" width="48" height="48" alt="Gemini AI" />
       <br />Gemini API
     </td>
   </tr>
